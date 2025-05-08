@@ -4,32 +4,78 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-center">Study Results</h2>
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white py-3">
+                <h2 class="text-center mb-0">
+                    <i class="bi bi-trophy me-2"></i>
+                    Study Results
+                </h2>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <div class="text-center mb-4">
-                    <h3>Thank you for participating!</h3>
-                    <p class="lead">
-                        Your score: {{ quiz_response.score }}/10
-                    </p>
-                    <p>
-                        You watched the video at {{ participant.treatment_group }}x speed.
-                    </p>
+                    <div class="display-1 text-primary mb-3">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <h3 class="mb-3">Thank you for participating!</h3>
+                    
+                    <div class="row justify-content-center mb-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light border-0">
+                                <div class="card-body p-4">
+                                    <h5 class="text-muted mb-3">Your Score</h5>
+                                    <div class="display-4 fw-bold">
+                                        {{ quiz_response.score }}<span class="fs-6">/10</span>
+                                    </div>
+                                    <div class="progress mt-2">
+                                        <div class="progress-bar bg-success" role="progressbar" 
+                                             style="width: {{ quiz_response.score|floatformat:0 }}0%;" 
+                                             aria-valuenow="{{ quiz_response.score }}" aria-valuemin="0" aria-valuemax="10">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-light border-start border-primary border-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-speedometer2 fs-3 me-2 text-primary"></i>
+                            <h5 class="mb-0">Test Conditions</h5>
+                        </div>
+                        <p class="mb-0">
+                            You watched the video at <span class="badge bg-primary">{{ participant.treatment_group }}x speed</span>
+                        </p>
+                    </div>
                 </div>
 
-                <div class="alert alert-info">
-                    <h4 class="alert-heading">About the Study</h4>
-                    <p>
-                        This study aims to investigate whether watching educational videos at different speeds
-                        affects learning outcomes. Your participation helps us understand how video playback
-                        speed impacts comprehension and retention.
-                    </p>
+                <div class="card bg-light border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h4 class="card-title d-flex align-items-center mb-3">
+                            <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                            About the Study
+                        </h4>
+                        <p>
+                            This study aims to investigate whether watching educational videos at different speeds
+                            affects learning outcomes. Your participation helps us understand how video playback
+                            speed impacts comprehension and retention.
+                        </p>
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <span class="badge bg-secondary">Educational Research</span>
+                            <span class="badge bg-secondary">Video Learning</span>
+                            <span class="badge bg-secondary">Speed Comprehension</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{% url 'study:home' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-house-door me-2"></i>
+                        Return to Home
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
