@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressBar = document.getElementById('quiz-progress');
     const quizForm = document.getElementById('quiz-form');
     let answeredCount = 0;
-    
+
     // Track answered questions and update progress bar
     quizForm.addEventListener('change', function(e) {
         if (e.target.type === 'radio') {
@@ -127,13 +127,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    
+
     function updateProgress() {
         const percentage = (answeredCount / quizCards.length) * 100;
         progressBar.style.width = percentage + '%';
         progressBar.textContent = Math.round(percentage) + '%';
     }
-    
+
     // Add subtle animation
     quizCards.forEach((card, index) => {
         setTimeout(() => {

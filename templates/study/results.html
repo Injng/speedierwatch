@@ -18,7 +18,7 @@
                         <i class="bi bi-check-circle-fill"></i>
                     </div>
                     <h3 class="mb-3">Thank you for participating!</h3>
-                    
+
                     <div class="row justify-content-center mb-4">
                         <div class="col-md-6">
                             <div class="card bg-light border-0">
@@ -28,8 +28,8 @@
                                         {{ quiz_response.score }}<span class="fs-6">/10</span>
                                     </div>
                                     <div class="progress mt-2">
-                                        <div class="progress-bar bg-success" role="progressbar" 
-                                             style="width: {{ quiz_response.score|floatformat:0 }}0%;" 
+                                        <div class="progress-bar bg-success" role="progressbar"
+                                             style="width: {% widthratio quiz_response.score 10 100 %}%;"
                                              aria-valuenow="{{ quiz_response.score }}" aria-valuemin="0" aria-valuemax="10">
                                         </div>
                                     </div>
@@ -37,7 +37,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="alert alert-light border-start border-primary border-4">
                         <div class="d-flex align-items-center mb-2">
                             <i class="bi bi-speedometer2 fs-3 me-2 text-primary"></i>
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="text-center mt-4">
                     <a href="{% url 'study:home' %}" class="btn btn-outline-primary">
                         <i class="bi bi-house-door me-2"></i>

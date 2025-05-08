@@ -58,7 +58,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('studyVideo');
     const startButton = document.getElementById('startVideo');
-    
+
     startButton.addEventListener('click', function() {
         video.playbackRate = {{ video_speed }};
         video.play();
@@ -66,13 +66,13 @@ document.addEventListener('DOMContentLoaded', function() {
         startButton.innerHTML = '<i class="bi bi-play-fill me-2"></i>Video Playing...';
         startButton.classList.remove('btn-primary');
         startButton.classList.add('btn-secondary');
-        
+
         // Add progress tracker
         const progressTracker = document.createElement('div');
         progressTracker.className = 'progress mt-3';
         progressTracker.innerHTML = '<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>';
         startButton.parentNode.appendChild(progressTracker);
-        
+
         // Update progress bar
         const progressBar = progressTracker.querySelector('.progress-bar');
         video.addEventListener('timeupdate', function() {
@@ -86,32 +86,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Prevent tab switching
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            const toast = document.createElement('div');
-            toast.className = 'position-fixed top-0 end-0 p-3';
-            toast.style.zIndex = '11';
-            toast.innerHTML = `
-                <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="toast-header bg-warning text-dark">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        <strong class="me-auto">Warning</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                    <div class="toast-body">
-                        Please do not switch tabs during the study.
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.querySelector('.toast').classList.remove('show');
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
-            
-            alert('Please do not switch tabs during the study.');
-        }
-    });
+document.addEventListener('visibilitychange', function() {
+if (document.hidden) {
+    const toast = document.createElement('div');
+    toast.className = 'position-fixed top-0 end-0 p-3';
+    toast.style.zIndex = '11';
+    toast.innerHTML = `
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-warning text-dark">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong class="me-auto">Warning</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Please do not switch tabs during the study.
+            </div>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.querySelector('.toast').classList.remove('show');
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+});
 });
 </script>
-{% endblock %} 
+{% endblock %}
