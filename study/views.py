@@ -13,7 +13,7 @@ def home(request):
             participant.treatment_group = random.randint(1, 2)
             participant.save()
             request.session['participant_id'] = participant.id
-            return redirect('video')
+            return redirect('study:video')
     else:
         form = ParticipantForm()
     return render(request, 'study/home.html', {'form': form})
@@ -22,7 +22,7 @@ def video(request):
     participant_id = request.session.get('participant_id')
     if not participant_id:
         messages.error(request, 'Please register first.')
-        return redirect('home')
+        return redirect('study:home')
     
     participant = Participant.objects.get(id=participant_id)
     return render(request, 'study/video.html', {
@@ -34,7 +34,7 @@ def quiz(request):
     participant_id = request.session.get('participant_id')
     if not participant_id:
         messages.error(request, 'Please register first.')
-        return redirect('home')
+        return redirect('study:home')
     
     participant = Participant.objects.get(id=participant_id)
     
@@ -50,7 +50,7 @@ def quiz(request):
                 participant=participant,
                 score=score
             )
-            return redirect('results')
+            return redirect('study:results')
     else:
         form = QuizForm(Question.objects.all())
     
@@ -60,7 +60,7 @@ def results(request):
     participant_id = request.session.get('participant_id')
     if not participant_id:
         messages.error(request, 'Please register first.')
-        return redirect('home')
+        return redirect('study:home')
     
     participant = Participant.objects.get(id=participant_id)
     quiz_response = QuizResponse.objects.get(participant=participant)
