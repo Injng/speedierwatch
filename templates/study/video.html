@@ -1,6 +1,22 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Watch Video - SpeedWatcher Study{% endblock %}
+{% block title %}Video - SpeedWatcher Study{% endblock %}
+
+{% block extra_css %}
+<style>
+    #studyVideo {
+        pointer-events: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+    .video-container {
+        position: relative;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -8,46 +24,59 @@
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-primary text-white py-3">
                 <h2 class="text-center mb-0">
-                    <i class="bi bi-film me-2"></i>
-                    Educational Video
+                    <i class="bi bi-play-circle me-2"></i>
+                    Video Content
                 </h2>
             </div>
             <div class="card-body p-4">
-                <div class="alert alert-info border-start border-info border-4 shadow-sm">
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="bi bi-info-circle-fill fs-4 me-2"></i>
-                        <h4 class="alert-heading mb-0">Important Instructions</h4>
-                    </div>
-                    <p>Please follow these guidelines:</p>
+                <div class="alert alert-info mb-4">
+                    <h5 class="alert-heading">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Important Instructions
+                    </h5>
                     <ul class="mb-0">
-                        <li class="mb-2">Watch the video in a quiet space or use headphones</li>
-                        <li class="mb-2">Do not click away from this tab</li>
-                        <li class="mb-2">The video will play at <span class="badge bg-primary">{{ video_speed }}x speed</span></li>
-                        <li>Pay close attention as you will be tested on the content</li>
+                        <li>Please watch the entire video without switching tabs or minimizing the window</li>
+                        <li>Do not use the video controls to change speed or seek</li>
+                        <li>The video will play at {{ participant.treatment_group }}x speed</li>
+                        <li>After watching, you will be asked to complete a quiz</li>
                     </ul>
                 </div>
 
-                <div class="card bg-dark text-white mt-4 mb-4">
-                    <div class="card-body p-0">
-                        <div class="ratio ratio-16x9">
-                            <video id="studyVideo" controls class="rounded-2">
-                                <source src="/media/chronomapping.mp4" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-dark text-center text-muted">
-                        <small>Video playing at {{ video_speed }}x speed</small>
-                    </div>
-                </div>
-
-                <div class="d-grid gap-2">
-                    <button id="startVideo" class="btn btn-primary btn-lg">
+                <div class="ratio ratio-16x9 mb-4 position-relative video-container">
+                    <video id="studyVideo" class="rounded" preload="auto">
+                        <source src="/media/chronomapping.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <button id="playButton" class="btn btn-primary position-absolute top-50 start-50 translate-middle">
                         <i class="bi bi-play-fill me-2"></i>
                         Start Video
                     </button>
                 </div>
+
+                <div class="progress mb-4">
+                    <div id="videoProgress" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                </div>
+
+                <div class="text-center">
+                    <a href="{% url 'study:quiz' %}" class="btn btn-primary" id="quizButton" style="display: none;">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Proceed to Quiz
+                    </a>
+                </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="warningToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-warning text-dark">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong class="me-auto">Warning</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            Switching tabs will invalidate your participation. Please stay on this page.
         </div>
     </div>
 </div>
@@ -55,61 +84,66 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const video = document.getElementById('studyVideo');
-    const startButton = document.getElementById('startVideo');
+    document.addEventListener('DOMContentLoaded', function() {
+        const video = document.getElementById('studyVideo');
+        const progressBar = document.getElementById('videoProgress');
+        const quizButton = document.getElementById('quizButton');
+        const playButton = document.getElementById('playButton');
+        const warningToast = new bootstrap.Toast(document.getElementById('warningToast'));
+        let tabSwitchCount = 0;
 
-    startButton.addEventListener('click', function() {
-        video.playbackRate = {{ video_speed }};
-        video.play();
-        startButton.disabled = true;
-        startButton.innerHTML = '<i class="bi bi-play-fill me-2"></i>Video Playing...';
-        startButton.classList.remove('btn-primary');
-        startButton.classList.add('btn-secondary');
+        // Prevent video manipulation
+        video.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
 
-        // Add progress tracker
-        const progressTracker = document.createElement('div');
-        progressTracker.className = 'progress mt-3';
-        progressTracker.innerHTML = '<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>';
-        startButton.parentNode.appendChild(progressTracker);
+        // Prevent keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === ' ' || e.key === 'k' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+            }
+        });
 
-        // Update progress bar
-        const progressBar = progressTracker.querySelector('.progress-bar');
+        // Set and enforce video speed
+        const targetSpeed = {{ participant.treatment_group }};
+        video.playbackRate = targetSpeed;
+        
+        // Monitor and enforce playback rate
+        video.addEventListener('ratechange', function() {
+            if (video.playbackRate !== targetSpeed) {
+                video.playbackRate = targetSpeed;
+            }
+        });
+
+        // Handle play button click
+        playButton.addEventListener('click', function() {
+            video.play();
+            playButton.style.display = 'none';
+        });
+
+        // Handle video progress
         video.addEventListener('timeupdate', function() {
-            const percent = (video.currentTime / video.duration) * 100;
-            progressBar.style.width = percent + '%';
+            const progress = (video.currentTime / video.duration) * 100;
+            progressBar.style.width = progress + '%';
+        });
+
+        // Show quiz button when video ends
+        video.addEventListener('ended', function() {
+            quizButton.style.display = 'inline-block';
+        });
+
+        // Handle tab switching
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                tabSwitchCount++;
+                if (tabSwitchCount === 1) {
+                    warningToast.show();
+                } else if (tabSwitchCount >= 2) {
+                    window.location.href = "{% url 'study:invalidated' %}";
+                }
+            }
         });
     });
-
-    video.addEventListener('ended', function() {
-        window.location.href = "{% url 'study:quiz' %}";
-    });
-
-    // Prevent tab switching
-document.addEventListener('visibilitychange', function() {
-if (document.hidden) {
-    const toast = document.createElement('div');
-    toast.className = 'position-fixed top-0 end-0 p-3';
-    toast.style.zIndex = '11';
-    toast.innerHTML = `
-        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header bg-warning text-dark">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <strong class="me-auto">Warning</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                Please do not switch tabs during the study.
-            </div>
-        </div>
-    `;
-    document.body.appendChild(toast);
-    setTimeout(() => {
-        toast.querySelector('.toast').classList.remove('show');
-        setTimeout(() => toast.remove(), 500);
-    }, 3000);
-}
-});
-});
 </script>
 {% endblock %}

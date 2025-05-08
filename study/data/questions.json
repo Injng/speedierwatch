@@ -1,0 +1,84 @@
+{
+    "questions": [
+        {
+            "text": "According to Professor Eldrin Kai's theory, what is the fundamental characteristic that Chrono-Mapping aims to detect and chart in geographical locations beyond their spatial coordinates?",
+            "correct_answer": "C",
+            "option_a": "Subterranean mineral deposits",
+            "option_b": "Fluctuations in electromagnetic fields",
+            "option_c": "Temporal resonance signatures",
+            "option_d": "Architectural structural integrity"
+        },
+        {
+            "text": "Which of the following best describes the primary proposed function of the \"Resonance Inductor\" in Chrono-Mapping?",
+            "correct_answer": "C",
+            "option_a": "To amplify existing radio waves for clearer geographical surveys",
+            "option_b": "To generate a protective energy field around the cartographer",
+            "option_c": "To detect and chart subtle energy imprints left by historical events",
+            "option_d": "To predict future geological shifts based on current landmass stress"
+        },
+        {
+            "text": "Professor Kai's manuscripts suggest that \"temporal resonance signatures\" are primarily a result of:",
+            "correct_answer": "C",
+            "option_a": "Natural geological aging processes",
+            "option_b": "Cosmic radiation interacting with the Earth's atmosphere",
+            "option_c": "Significant historical events or prolonged human activity",
+            "option_d": "The gravitational pull of celestial bodies"
+        },
+        {
+            "text": "The theoretical operation of the Resonance Inductor, as described by Kai, relied on a specific interaction between crystalline structures and what other element?",
+            "correct_answer": "C",
+            "option_a": "High-frequency sound waves",
+            "option_b": "Concentrated solar energy",
+            "option_c": "Minute electrical currents",
+            "option_d": "Atmospheric pressure changes"
+        },
+        {
+            "text": "What was the purported origin of the unique crystals believed to be essential for the Resonance Inductor's function?",
+            "correct_answer": "C",
+            "option_a": "A meteor impact site in the Sahara Desert",
+            "option_b": "Deep-sea volcanic vents in the Pacific Ocean",
+            "option_c": "A unique geological formation in the Ural Mountains",
+            "option_d": "Synthetically grown labs under high pressure"
+        },
+        {
+            "text": "In the visual representation produced by the Resonance Inductor, what did vibrant, tight, color-coded rings signify?",
+            "correct_answer": "C",
+            "option_a": "A geographically small but historically insignificant event",
+            "option_b": "An ancient event of minimal temporal impact",
+            "option_c": "A powerful and relatively recent temporal resonance",
+            "option_d": "An event with a broad geographical spread but low temporal energy"
+        },
+        {
+            "text": "Conversely, what would fainter, wider rings on a Chrono-Map suggest about the temporal resonance detected?",
+            "correct_answer": "B",
+            "option_a": "An ongoing event with fluctuating energy levels",
+            "option_b": "Older, less impactful occurrences",
+            "option_c": "A future event with a high probability of occurrence",
+            "option_d": "A recent but very localized and weak temporal signature"
+        },
+        {
+            "text": "The core innovation of Chrono-Mapping, distinguishing it from traditional cartography, is its attempt to map:",
+            "correct_answer": "B",
+            "option_a": "The emotional intensity associated with locations",
+            "option_b": "The \"when\" of a location's significance, not just the \"where\"",
+            "option_c": "The future economic potential of an area",
+            "option_d": "The biodiversity and ecological history of a region"
+        },
+        {
+            "text": "Which of these statements most accurately reflects a challenge implied by Kai's theory of the Resonance Inductor?",
+            "correct_answer": "C",
+            "option_a": "The device would require an enormous power source, making it impractical for field use",
+            "option_b": "The interpretation of the color-coded rings would be highly subjective and prone to error",
+            "option_c": "The specific crystalline structures needed were rare and difficult to acquire",
+            "option_d": "The device could inadvertently alter the temporal resonances it was trying to measure"
+        },
+        {
+            "text": "Based on the description, the Resonance Inductor translates vibrations from the crystals into what primary output format?",
+            "correct_answer": "D",
+            "option_a": "An auditory sequence of tones and frequencies",
+            "option_b": "A written textual report detailing historical data",
+            "option_c": "A numerical data stream for computer analysis",
+            "option_d": "A visual representation overlaid on a traditional map"
+        }
+    ]
+} 

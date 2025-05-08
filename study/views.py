@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Participant, QuizResponse, Question
+from .models import Participant, QuizResponse
 from .forms import ParticipantForm, QuizForm
 import random
+import json
+from pathlib import Path
 
 
 def home(request):
@@ -36,6 +38,23 @@ def video(request):
     )
 
 
+def invalidate_participant(request):
+    participant_id = request.session.get("participant_id")
+    if participant_id:
+        try:
+            # Delete all related data
+            participant = Participant.objects.get(id=participant_id)
+            QuizResponse.objects.filter(participant=participant).delete()
+            participant.delete()
+        except Participant.DoesNotExist:
+            pass
+        finally:
+            # Clear session
+            request.session.flush()
+    
+    return render(request, "study/invalidated.html")
+
+
 def quiz(request):
     participant_id = request.session.get("participant_id")
     if not participant_id:
@@ -45,17 +64,23 @@ def quiz(request):
     participant = Participant.objects.get(id=participant_id)
 
     if request.method == "POST":
-        form = QuizForm(Question.objects.all(), request.POST)
+        form = QuizForm(request.POST)
         if form.is_valid():
+            # Load questions from JSON
+            json_path = Path(__file__).parent / "data" / "questions.json"
+            with open(json_path) as f:
+                questions_data = json.load(f)
+            
+            # Calculate score
             score = 0
-            for i, question in enumerate(Question.objects.all()):
-                if form.cleaned_data[f"question_{i}"] == question.correct_answer:
+            for i, question in enumerate(questions_data["questions"]):
+                if form.cleaned_data[f"question_{i}"] == question["correct_answer"]:
                     score += 1
 
             QuizResponse.objects.create(participant=participant, score=score)
             return redirect("study:results")
     else:
-        form = QuizForm(Question.objects.all())
+        form = QuizForm()
 
     return render(request, "study/quiz.html", {"form": form})
 
