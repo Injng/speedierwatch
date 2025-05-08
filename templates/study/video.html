@@ -4,32 +4,48 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-center">Educational Video</h2>
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white py-3">
+                <h2 class="text-center mb-0">
+                    <i class="bi bi-film me-2"></i>
+                    Educational Video
+                </h2>
             </div>
-            <div class="card-body">
-                <div class="alert alert-info">
-                    <h4 class="alert-heading">Important Instructions</h4>
+            <div class="card-body p-4">
+                <div class="alert alert-info border-start border-info border-4 shadow-sm">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-info-circle-fill fs-4 me-2"></i>
+                        <h4 class="alert-heading mb-0">Important Instructions</h4>
+                    </div>
                     <p>Please follow these guidelines:</p>
-                    <ul>
-                        <li>Watch the video in a quiet space or use headphones</li>
-                        <li>Do not click away from this tab</li>
-                        <li>The video will play at {{ video_speed }}x speed</li>
+                    <ul class="mb-0">
+                        <li class="mb-2">Watch the video in a quiet space or use headphones</li>
+                        <li class="mb-2">Do not click away from this tab</li>
+                        <li class="mb-2">The video will play at <span class="badge bg-primary">{{ video_speed }}x speed</span></li>
                         <li>Pay close attention as you will be tested on the content</li>
                     </ul>
                 </div>
 
-                <div class="ratio ratio-16x9 mb-4">
-                    <video id="studyVideo" controls>
-                        <source src="/media/chronomapping.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                <div class="card bg-dark text-white mt-4 mb-4">
+                    <div class="card-body p-0">
+                        <div class="ratio ratio-16x9">
+                            <video id="studyVideo" controls class="rounded-2">
+                                <source src="/media/chronomapping.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-dark text-center text-muted">
+                        <small>Video playing at {{ video_speed }}x speed</small>
+                    </div>
                 </div>
 
                 <div class="d-grid gap-2">
-                    <button id="startVideo" class="btn btn-primary">Start Video</button>
+                    <button id="startVideo" class="btn btn-primary btn-lg">
+                        <i class="bi bi-play-fill me-2"></i>
+                        Start Video
+                    </button>
                 </div>
             </div>
         </div>
@@ -42,11 +58,27 @@
 document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('studyVideo');
     const startButton = document.getElementById('startVideo');
-    
+
     startButton.addEventListener('click', function() {
         video.playbackRate = {{ video_speed }};
         video.play();
         startButton.disabled = true;
+        startButton.innerHTML = '<i class="bi bi-play-fill me-2"></i>Video Playing...';
+        startButton.classList.remove('btn-primary');
+        startButton.classList.add('btn-secondary');
+
+        // Add progress tracker
+        const progressTracker = document.createElement('div');
+        progressTracker.className = 'progress mt-3';
+        progressTracker.innerHTML = '<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>';
+        startButton.parentNode.appendChild(progressTracker);
+
+        // Update progress bar
+        const progressBar = progressTracker.querySelector('.progress-bar');
+        video.addEventListener('timeupdate', function() {
+            const percent = (video.currentTime / video.duration) * 100;
+            progressBar.style.width = percent + '%';
+        });
     });
 
     video.addEventListener('ended', function() {
@@ -54,11 +86,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Prevent tab switching
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            alert('Please do not switch tabs during the study.');
-        }
-    });
+document.addEventListener('visibilitychange', function() {
+if (document.hidden) {
+    const toast = document.createElement('div');
+    toast.className = 'position-fixed top-0 end-0 p-3';
+    toast.style.zIndex = '11';
+    toast.innerHTML = `
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-warning text-dark">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong class="me-auto">Warning</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Please do not switch tabs during the study.
+            </div>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.querySelector('.toast').classList.remove('show');
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+});
 });
 </script>
-{% endblock %} 
+{% endblock %}

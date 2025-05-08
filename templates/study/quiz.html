@@ -5,25 +5,45 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-center">Multiple Choice Quiz</h2>
+    <div class="col-lg-9">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white py-3">
+                <h2 class="text-center mb-0">
+                    <i class="bi bi-question-circle me-2"></i>
+                    Multiple Choice Quiz
+                </h2>
             </div>
-            <div class="card-body">
-                <p class="lead text-center mb-4">
-                    Please answer all questions based on the video you just watched.
-                </p>
+            <div class="card-body p-4">
+                <div class="alert alert-light bg-light border-start border-primary border-4 mb-4">
+                    <div class="d-flex">
+                        <div class="me-3">
+                            <i class="bi bi-info-square-fill text-primary fs-3"></i>
+                        </div>
+                        <div>
+                            <h5 class="alert-heading">Quiz Instructions</h5>
+                            <p class="mb-0">Please answer all questions based on the educational video you just watched. Select the best answer for each question.</p>
+                        </div>
+                    </div>
+                </div>
 
-                <form method="post" class="needs-validation" novalidate>
+                <div class="progress mb-4">
+                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%" id="quiz-progress"></div>
+                </div>
+
+                <form method="post" class="needs-validation" id="quiz-form" novalidate>
                     {% csrf_token %}
                     {% for field in form %}
-                        <div class="card mb-4">
+                        <div class="card mb-4 border-0 shadow-sm quiz-card">
+                            <div class="card-header bg-light py-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0 fw-bold">{{ forloop.counter }}. {{ field.label }}</h5>
+                                    <span class="badge bg-primary rounded-pill">Question {{ forloop.counter }}</span>
+                                </div>
+                            </div>
                             <div class="card-body">
-                                <h5 class="card-title mb-3">{{ field.label }}</h5>
                                 <div class="quiz-options">
                                     {% for radio in field %}
-                                        <div class="quiz-option">
+                                        <div class="quiz-option form-check py-2 border-bottom">
                                             {{ radio }}
                                         </div>
                                     {% endfor %}
@@ -32,8 +52,11 @@
                         </div>
                     {% endfor %}
 
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">Submit Quiz</button>
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check-circle me-2"></i>
+                            Submit Quiz
+                        </button>
                     </div>
                 </form>
             </div>
@@ -45,25 +68,78 @@
 {% block extra_css %}
 <style>
     .quiz-options {
-        padding-left: 1.5rem;
+        padding-left: 0.5rem;
     }
     .quiz-option {
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
         position: relative;
+        transition: all 0.2s ease;
+        border-radius: 0.25rem;
+    }
+    .quiz-option:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+    .quiz-option:last-child {
+        border-bottom: none !important;
     }
     .quiz-option input[type="radio"] {
-        position: absolute;
-        left: -1.5rem;
-        top: 0.25rem;
+        margin-right: 0.5rem;
     }
     .quiz-option label {
-        display: block;
-        padding-left: 0.5rem;
+        display: inline-block;
+        padding: 0.5rem;
+        width: 100%;
+        cursor: pointer;
         word-wrap: break-word;
+        margin-bottom: 0;
     }
     .card-title {
         font-size: 1.1rem;
         font-weight: 600;
+        color: #212529;
+    }
+    .quiz-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .quiz-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
     }
 </style>
-{% endblock %} 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const quizCards = document.querySelectorAll('.quiz-card');
+    const progressBar = document.getElementById('quiz-progress');
+    const quizForm = document.getElementById('quiz-form');
+    let answeredCount = 0;
+
+    // Track answered questions and update progress bar
+    quizForm.addEventListener('change', function(e) {
+        if (e.target.type === 'radio') {
+            const currentCard = e.target.closest('.quiz-card');
+            if (!currentCard.classList.contains('answered')) {
+                currentCard.classList.add('answered');
+                answeredCount++;
+                updateProgress();
+            }
+        }
+    });
+
+    function updateProgress() {
+        const percentage = (answeredCount / quizCards.length) * 100;
+        progressBar.style.width = percentage + '%';
+        progressBar.textContent = Math.round(percentage) + '%';
+    }
+
+    // Add subtle animation
+    quizCards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '1';
+        }, 100 * index);
+    });
+});
+</script>
+{% endblock %}

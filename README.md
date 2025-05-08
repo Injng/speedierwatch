@@ -51,4 +51,4 @@ python manage.py runserver
 - `study/` - Main application for the study
 - `templates/` - HTML templates
 - `static/` - Static files (CSS, JS, images)
-- `media/` - User-uploaded files (videos) 
+- `media/` - User-uploaded files (videos)
