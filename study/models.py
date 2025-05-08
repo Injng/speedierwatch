@@ -27,15 +27,3 @@ class QuizResponse(models.Model):
 
     def __str__(self):
         return f"{self.participant.name}'s Quiz - Score: {self.score}/10"
-
-
-class Question(models.Model):
-    text = models.TextField()
-    correct_answer = models.CharField(max_length=200)
-    option_a = models.CharField(max_length=200)
-    option_b = models.CharField(max_length=200)
-    option_c = models.CharField(max_length=200)
-    option_d = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.text[:50] + "..."

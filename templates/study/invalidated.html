@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Study Invalidated - SpeedWatcher Study{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-danger text-white py-3">
+                <h2 class="text-center mb-0">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Study Invalidated
+                </h2>
+            </div>
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <div class="display-1 text-danger mb-3">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </div>
+                    <h3 class="mb-3">Your participation has been invalidated</h3>
+                    <p class="lead text-muted">
+                        You switched away from the study tab during the video playback.
+                    </p>
+                </div>
+
+                <div class="alert alert-danger border-start border-danger border-4">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-info-circle-fill fs-4 me-2"></i>
+                        <h4 class="alert-heading mb-0">Why was this necessary?</h4>
+                    </div>
+                    <p class="mb-0">
+                        To ensure the validity of our study results, we require participants to maintain focus on the video content without interruption. Switching tabs or leaving the study page compromises the integrity of the data collection process.
+                    </p>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <a href="{% url 'study:home' %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-house-fill me-2"></i>
+                        Return to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
