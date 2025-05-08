@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Quiz - SpeedWatcher Study{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Multiple Choice Quiz</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead text-center mb-4">
+                    Please answer all questions based on the video you just watched.
+                </p>
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ field.label }}</h5>
+                                <div class="form-check">
+                                    {{ field }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Submit Quiz</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

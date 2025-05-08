@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Results - SpeedWatcher Study{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Study Results</h2>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <h3>Thank you for participating!</h3>
+                    <p class="lead">
+                        Your score: {{ quiz_response.score }}/10
+                    </p>
+                    <p>
+                        You watched the video at {{ participant.treatment_group }}x speed.
+                    </p>
+                </div>
+
+                <div class="alert alert-info">
+                    <h4 class="alert-heading">About the Study</h4>
+                    <p>
+                        This study aims to investigate whether watching educational videos at different speeds
+                        affects learning outcomes. Your participation helps us understand how video playback
+                        speed impacts comprehension and retention.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

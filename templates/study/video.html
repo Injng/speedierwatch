@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Watch Video - SpeedWatcher Study{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Educational Video</h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h4 class="alert-heading">Important Instructions</h4>
+                    <p>Please follow these guidelines:</p>
+                    <ul>
+                        <li>Watch the video in a quiet space or use headphones</li>
+                        <li>Do not click away from this tab</li>
+                        <li>The video will play at {{ video_speed }}x speed</li>
+                        <li>Pay close attention as you will be tested on the content</li>
+                    </ul>
+                </div>
+
+                <div class="ratio ratio-16x9 mb-4">
+                    <video id="studyVideo" controls>
+                        <source src="/media/chronomapping.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button id="startVideo" class="btn btn-primary">Start Video</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('studyVideo');
+    const startButton = document.getElementById('startVideo');
+    
+    startButton.addEventListener('click', function() {
+        video.playbackRate = {{ video_speed }};
+        video.play();
+        startButton.disabled = true;
+    });
+
+    video.addEventListener('ended', function() {
+        window.location.href = "{% url 'study:quiz' %}";
+    });
+
+    // Prevent tab switching
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            alert('Please do not switch tabs during the study.');
+        }
+    });
+});
+</script>
+{% endblock %} 
