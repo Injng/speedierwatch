@@ -20,9 +20,13 @@
                     {% for field in form %}
                         <div class="card mb-4">
                             <div class="card-body">
-                                <h5 class="card-title">{{ field.label }}</h5>
-                                <div class="form-check">
-                                    {{ field }}
+                                <h5 class="card-title mb-3">{{ field.label }}</h5>
+                                <div class="quiz-options">
+                                    {% for radio in field %}
+                                        <div class="quiz-option">
+                                            {{ radio }}
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
@@ -36,4 +40,30 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .quiz-options {
+        padding-left: 1.5rem;
+    }
+    .quiz-option {
+        margin-bottom: 0.75rem;
+        position: relative;
+    }
+    .quiz-option input[type="radio"] {
+        position: absolute;
+        left: -1.5rem;
+        top: 0.25rem;
+    }
+    .quiz-option label {
+        display: block;
+        padding-left: 0.5rem;
+        word-wrap: break-word;
+    }
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+</style>
 {% endblock %} 
