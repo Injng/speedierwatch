@@ -1,4 +1,4 @@
-# SpeedWatcher - Educational Video Study
+# SpeedierWatch - Educational Video Study
 
 This is a Django-based web application for conducting a study on the impact of video playback speed on learning outcomes.
 
@@ -47,8 +47,7 @@ python manage.py runserver
 
 ## Project Structure
 
-- `speedwatcher/` - Main project directory
+- `speedierwatch/` - Main project directory
 - `study/` - Main application for the study
 - `templates/` - HTML templates
-- `static/` - Static files (CSS, JS, images)
-- `media/` - User-uploaded files (videos)
+- `

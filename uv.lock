@@ -147,7 +147,7 @@ wheels = [
 ]
 
 [[package]]
-name = "speedwatcher"
+name = "speedierwatch"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
