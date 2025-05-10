@@ -19,6 +19,40 @@
 {% endblock %}
 
 {% block content %}
+<!-- Disclaimer Modal -->
+<div class="modal fade" id="disclaimerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="disclaimerModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Important Disclaimers
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning mb-3">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                    Do not click away from this tab, otherwise your results will be cancelled.
+                </div>
+                <div class="alert alert-warning mb-3">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                    Do not take notes while watching the video.
+                </div>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    Please note that the video content is fictional.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="acceptDisclaimer">
+                    <i class="bi bi-check-circle me-2"></i>
+                    I Understand
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card border-0 shadow-sm">
@@ -90,7 +124,16 @@
         const quizButton = document.getElementById('quizButton');
         const playButton = document.getElementById('playButton');
         const warningToast = new bootstrap.Toast(document.getElementById('warningToast'));
+        const disclaimerModal = new bootstrap.Modal(document.getElementById('disclaimerModal'));
         let tabSwitchCount = 0;
+
+        // Show disclaimer modal when page loads
+        disclaimerModal.show();
+
+        // Handle disclaimer acceptance
+        document.getElementById('acceptDisclaimer').addEventListener('click', function() {
+            disclaimerModal.hide();
+        });
 
         // Prevent video manipulation
         video.addEventListener('contextmenu', function(e) {
