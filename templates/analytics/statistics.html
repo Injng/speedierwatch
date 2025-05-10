@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Quiz Statistics{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Quiz Statistics</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Overall Statistics
+        </div>
+        <div class="card-body">
+            <p>Total Responses: {{ total_responses }}</p>
+            <p>Average Score: {{ average_score|floatformat:2 }} / 10</p>
+            <p>Minimum Score: {{ min_score }} / 10</p>
+            <p>Maximum Score: {{ max_score }} / 10</p>
+        </div>
+    </div>
+
+    <h2>Statistics by Treatment Group</h2>
+    {% if responses_by_treatment_group %}
+        {% for group_stats in responses_by_treatment_group %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    Group {{ group_stats.participant__treatment_group }} ({{ group_stats.count }} response{{ group_stats.count|pluralize }})
+                </div>
+                <div class="card-body">
+                    <p>Average Score: {{ group_stats.avg_score|floatformat:2 }} / 10</p>
+                    <p>Minimum Score: {{ group_stats.min_score }} / 10</p>
+                    <p>Maximum Score: {{ group_stats.max_score }} / 10</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No responses yet for any treatment group.</p>
+    {% endif %}
+
+</div>
+{% endblock %}
