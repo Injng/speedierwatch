@@ -151,7 +151,7 @@
         // Set and enforce video speed
         const targetSpeed = {{ participant.treatment_group }};
         video.playbackRate = targetSpeed;
-        
+
         // Monitor and enforce playback rate
         video.addEventListener('ratechange', function() {
             if (video.playbackRate !== targetSpeed) {

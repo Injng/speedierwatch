@@ -60,7 +60,7 @@
             "text": "The core innovation of Chrono-Mapping, distinguishing it from traditional cartography, is its attempt to map:",
             "correct_answer": "B",
             "option_a": "The emotional intensity associated with locations",
-            "option_b": "The times regarding the geographical location or event", 
+            "option_b": "The times regarding the geographical location or event",
             "option_c": "The future economic potential of an area",
             "option_d": "The biodiversity and ecological history of a region"
         },
@@ -81,4 +81,4 @@
             "option_d": "A visual representation overlaid on a traditional map"
         }
     ]
-} 
+}

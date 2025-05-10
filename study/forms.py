@@ -17,12 +17,12 @@ class ParticipantForm(forms.ModelForm):
 class QuizForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         # Load questions from JSON file
         json_path = Path(__file__).parent / "data" / "questions.json"
         with open(json_path) as f:
             questions_data = json.load(f)
-        
+
         # Create form fields for each question
         for i, question in enumerate(questions_data["questions"]):
             self.fields[f"question_{i}"] = forms.ChoiceField(

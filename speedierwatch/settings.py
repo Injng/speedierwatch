@@ -35,8 +35,9 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 if not CSRF_TRUSTED_ORIGINS:
     # If no explicit CSRF origins set, use ALLOWED_HOSTS to create them
-    CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS if host] + \
-                           [f"http://{host}" for host in ALLOWED_HOSTS if host]
+    CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS if host] + [
+        f"http://{host}" for host in ALLOWED_HOSTS if host
+    ]
 
 # Application definition
 
@@ -47,7 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "whitenoise.runserver_nostatic",  
+    "whitenoise.runserver_nostatic",
     "study.apps.StudyConfig",
     "analytics.apps.AnalyticsConfig",  # Added analytics app
     "crispy_forms",
@@ -56,7 +57,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware", 
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

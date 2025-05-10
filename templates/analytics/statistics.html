@@ -36,5 +36,32 @@
         <p>No responses yet for any treatment group.</p>
     {% endif %}
 
+    <hr class="my-4">
+
+    <h2>T-Test Results (Group 1 vs Group 2)</h2>
+    {% if t_statistic is not None and p_value is not None and confidence_interval is not None %}
+        <div class="card mb-4">
+            <div class="card-header">
+                Hypothesis Test (Welch's t-test, one-sided: Group 1 > Group 2)
+            </div>
+            <div class="card-body">
+                <p><strong>T-statistic:</strong> {{ t_statistic|floatformat:3 }}</p>
+                <p><strong>P-value:</strong> {{ p_value|floatformat:3 }}</p>
+                <p><strong>Confidence Interval (95% for difference in means):</strong> ({{ confidence_interval.0|floatformat:3 }}, {{ confidence_interval.1|floatformat:3 }})</p>
+                <p><strong>Alpha:</strong> {{ alpha }}</p>
+                <p><strong>Group 1 Count:</strong> {{ group1_count }}</p>
+                <p><strong>Group 2 Count:</strong> {{ group2_count }}</p>
+                {% if p_value < alpha %}
+                    <p class="text-success">The result is statistically significant at alpha = {{ alpha }}. We reject the null hypothesis.</p>
+                {% else %}
+                    <p class="text-warning">The result is not statistically significant at alpha = {{ alpha }}. We fail to reject the null hypothesis.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <p>T-test could not be performed. Requires at least 2 responses in each group.</p>
+        <p>Group 1 Count: {{ group1_count }}, Group 2 Count: {{ group2_count }}</p>
+    {% endif %}
+
 </div>
 {% endblock %}

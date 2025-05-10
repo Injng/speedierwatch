@@ -4,9 +4,7 @@ from .models import Participant, QuizResponse
 from .forms import ParticipantForm, QuizForm
 import random
 import json
-import os
 from pathlib import Path
-from django.conf import settings
 
 
 def home(request):
@@ -53,7 +51,7 @@ def invalidate_participant(request):
         finally:
             # Clear session
             request.session.flush()
-    
+
     return render(request, "study/invalidated.html")
 
 
@@ -72,7 +70,7 @@ def quiz(request):
             json_path = Path(__file__).parent / "data" / "questions.json"
             with open(json_path) as f:
                 questions_data = json.load(f)
-            
+
             # Calculate score
             score = 0
             for i, question in enumerate(questions_data["questions"]):
