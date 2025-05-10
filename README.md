@@ -37,6 +37,11 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
+7. Running in Production (Optional):
+```bash
+uv run gunicorn speedierwatch.wsgi --bind 0.0.0.0:8888
+```
+
 ## Features
 
 - Random assignment of participants to 1x or 2x video speed groups
