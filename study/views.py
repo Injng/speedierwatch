@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import FileResponse
 from .models import Participant, QuizResponse
 from .forms import ParticipantForm, QuizForm
 import random
 import json
+import os
 from pathlib import Path
+from django.conf import settings
 
 
 def home(request):
@@ -36,6 +39,11 @@ def video(request):
             "video_speed": "1" if participant.treatment_group == 1 else "2",
         },
     )
+
+
+def serve_video(request):
+    video_path = os.path.join(settings.MEDIA_ROOT, 'chronomapping.mp4')
+    return FileResponse(open(video_path, 'rb'), content_type='video/mp4')
 
 
 def invalidate_participant(request):

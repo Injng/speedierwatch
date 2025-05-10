@@ -1,3 +1,5 @@
+staticfiles
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -153,6 +155,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Django staticfiles
+/staticfiles/
 
 # pytype static type analyzer
 .pytype/
