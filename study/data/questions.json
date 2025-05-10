@@ -3,7 +3,7 @@
         {
             "text": "According to Professor Eldrin Kai's theory, what is the fundamental characteristic that Chrono-Mapping aims to detect and chart in geographical locations beyond their spatial coordinates?",
             "correct_answer": "C",
-            "option_a": "Subterranean mineral deposits",
+            "option_a": "Unique geological formations",
             "option_b": "Fluctuations in electromagnetic fields",
             "option_c": "Temporal resonance signatures",
             "option_d": "Architectural structural integrity"
@@ -21,7 +21,7 @@
             "correct_answer": "C",
             "option_a": "Natural geological aging processes",
             "option_b": "Cosmic radiation interacting with the Earth's atmosphere",
-            "option_c": "Significant historical events or prolonged human activity",
+            "option_c": "Historical events or prolonged human activity",
             "option_d": "The gravitational pull of celestial bodies"
         },
         {
@@ -35,10 +35,10 @@
         {
             "text": "What was the purported origin of the unique crystals believed to be essential for the Resonance Inductor's function?",
             "correct_answer": "C",
-            "option_a": "A meteor impact site in the Sahara Desert",
-            "option_b": "Deep-sea volcanic vents in the Pacific Ocean",
-            "option_c": "A unique geological formation in the Ural Mountains",
-            "option_d": "Synthetically grown labs under high pressure"
+            "option_a": "A meteor site in the Sahara Desert",
+            "option_b": "Deep-sea vents in the Pacific Ocean",
+            "option_c": "The Ural Mountains",
+            "option_d": "Synthetically grown labs"
         },
         {
             "text": "In the visual representation produced by the Resonance Inductor, what did vibrant, tight, color-coded rings signify?",
@@ -52,7 +52,7 @@
             "text": "Conversely, what would fainter, wider rings on a Chrono-Map suggest about the temporal resonance detected?",
             "correct_answer": "B",
             "option_a": "An ongoing event with fluctuating energy levels",
-            "option_b": "Older, less impactful occurrences",
+            "option_b": "Older historical occurrences",
             "option_c": "A future event with a high probability of occurrence",
             "option_d": "A recent but very localized and weak temporal signature"
         },
@@ -60,7 +60,7 @@
             "text": "The core innovation of Chrono-Mapping, distinguishing it from traditional cartography, is its attempt to map:",
             "correct_answer": "B",
             "option_a": "The emotional intensity associated with locations",
-            "option_b": "The \"when\" of a location's significance, not just the \"where\"",
+            "option_b": "The times regarding the geographical location or event", 
             "option_c": "The future economic potential of an area",
             "option_d": "The biodiversity and ecological history of a region"
         },
