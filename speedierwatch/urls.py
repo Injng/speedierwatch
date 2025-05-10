@@ -25,6 +25,6 @@ urlpatterns = [
     path("", include("study.urls")),
 ]
 
-# Only add these URL patterns during development
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# No longer needed as WhiteNoise will handle media files
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
