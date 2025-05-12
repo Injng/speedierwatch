@@ -3,6 +3,9 @@ from django.db.models import Avg, Count, Min, Max, StdDev
 from study.models import QuizResponse
 from scipy import stats
 import numpy as np
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def statistics_view(request):
@@ -65,6 +68,64 @@ def statistics_view(request):
         ci_lower, ci_upper = stats.t.interval(1 - alpha, df, loc=mean_diff, scale=se)
         confidence_interval = (ci_lower, ci_upper)
 
+    # Print statistics to the terminal/log
+    print("\n=== STUDY STATISTICS ===")
+    print(f"Total Responses: {total_responses}")
+    print(
+        f"Average Score: {average_score if average_score is not None else 0:.2f} / 10"
+    )
+    print(f"Min Score: {min_score if min_score is not None else 0} / 10")
+    print(f"Max Score: {max_score if max_score is not None else 0} / 10")
+
+    print("\n--- Statistics by Treatment Group ---")
+    for group in responses_by_treatment_group:
+        print(
+            f"Group {group['participant__treatment_group']} ({group['count']} responses)"
+        )
+        print(f"  Average Score: {group['avg_score']:.2f} / 10")
+        print(f"  Min Score: {group['min_score']} / 10")
+        print(f"  Max Score: {group['max_score']} / 10")
+        print(f"  Standard Deviation: {group['std_dev_score']:.2f}")
+
+    print("\n--- T-Test Results (Group 1 vs Group 2) ---")
+    if (
+        t_statistic is not None
+        and p_value is not None
+        and confidence_interval is not None
+    ):
+        print(f"T-statistic: {t_statistic:.3f}")
+        print(f"P-value: {p_value:.3f}")
+        print(
+            f"Confidence Interval (95%): ({confidence_interval[0]:.3f}, {confidence_interval[1]:.3f})"
+        )
+        print("Alpha: 0.05")
+        print(f"Group 1 Count: {len(group1_scores)}")
+        print(f"Group 2 Count: {len(group2_scores)}")
+        if p_value < 0.05:
+            print(
+                "The result is statistically significant at alpha = 0.05. We reject the null hypothesis."
+            )
+        else:
+            print(
+                "The result is not statistically significant at alpha = 0.05. We fail to reject the null hypothesis."
+            )
+    else:
+        print(
+            "T-test could not be performed. Requires at least 2 responses in each group."
+        )
+        print(
+            f"Group 1 Count: {len(group1_scores)}, Group 2 Count: {len(group2_scores)}"
+        )
+    print("========================\n")
+
+    # Log statistics as well (for server logs)
+    logger.info("=== STUDY STATISTICS ===")
+    logger.info(f"Total Responses: {total_responses}")
+    logger.info(
+        f"Average Score: {average_score if average_score is not None else 0:.2f} / 10"
+    )
+
+    # Return context with placeholders - actual stats will be in terminal/logs
     context = {
         "total_responses": total_responses,
         "average_score": average_score if average_score is not None else 0,

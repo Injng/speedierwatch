@@ -10,58 +10,44 @@
         <div class="card-header">
             Overall Statistics
         </div>
-        <div class="card-body">
-            <p>Total Responses: {{ total_responses }}</p>
-            <p>Average Score: {{ average_score|floatformat:2 }} / 10</p>
-            <p>Minimum Score: {{ min_score }} / 10</p>
-            <p>Maximum Score: {{ max_score }} / 10</p>
+        <div class="card-body text-center">
+            <div class="py-4">
+                <i class="bi bi-graph-up fs-1 text-primary mb-3"></i>
+                <h3>Overall statistics will be shown at the end of the survey</h3>
+                <p class="text-muted">Thank you for participating in our study</p>
+            </div>
         </div>
     </div>
 
     <h2>Statistics by Treatment Group</h2>
-    {% if responses_by_treatment_group %}
-        {% for group_stats in responses_by_treatment_group %}
-            <div class="card mb-3">
-                <div class="card-header">
-                    Group {{ group_stats.participant__treatment_group }} ({{ group_stats.count }} response{{ group_stats.count|pluralize }})
-                </div>
-                <div class="card-body">
-                    <p>Average Score: {{ group_stats.avg_score|floatformat:2 }} / 10</p>
-                    <p>Minimum Score: {{ group_stats.min_score }} / 10</p>
-                    <p>Maximum Score: {{ group_stats.max_score }} / 10</p>
-                </div>
+    <div class="card mb-3">
+        <div class="card-header">
+            Group Statistics
+        </div>
+        <div class="card-body text-center">
+            <div class="py-4">
+                <i class="bi bi-bar-chart-line fs-1 text-primary mb-3"></i>
+                <h3>Group statistics will be shown at the end of the survey</h3>
+                <p class="text-muted">Complete the survey to view detailed results</p>
             </div>
-        {% endfor %}
-    {% else %}
-        <p>No responses yet for any treatment group.</p>
-    {% endif %}
+        </div>
+    </div>
 
     <hr class="my-4">
 
     <h2>T-Test Results (Group 1 vs Group 2)</h2>
-    {% if t_statistic is not None and p_value is not None and confidence_interval is not None %}
-        <div class="card mb-4">
-            <div class="card-header">
-                Hypothesis Test (Welch's t-test, one-sided: Group 1 > Group 2)
-            </div>
-            <div class="card-body">
-                <p><strong>T-statistic:</strong> {{ t_statistic|floatformat:3 }}</p>
-                <p><strong>P-value:</strong> {{ p_value|floatformat:3 }}</p>
-                <p><strong>Confidence Interval (95% for difference in means):</strong> ({{ confidence_interval.0|floatformat:3 }}, {{ confidence_interval.1|floatformat:3 }})</p>
-                <p><strong>Alpha:</strong> {{ alpha }}</p>
-                <p><strong>Group 1 Count:</strong> {{ group1_count }}</p>
-                <p><strong>Group 2 Count:</strong> {{ group2_count }}</p>
-                {% if p_value < alpha %}
-                    <p class="text-success">The result is statistically significant at alpha = {{ alpha }}. We reject the null hypothesis.</p>
-                {% else %}
-                    <p class="text-warning">The result is not statistically significant at alpha = {{ alpha }}. We fail to reject the null hypothesis.</p>
-                {% endif %}
+    <div class="card mb-4">
+        <div class="card-header">
+            Hypothesis Test Results
+        </div>
+        <div class="card-body text-center">
+            <div class="py-4">
+                <i class="bi bi-clock-history fs-1 text-primary mb-3"></i>
+                <h3>Results will be shown at the end of the survey</h3>
+                <p class="text-muted">Thank you for your patience</p>
             </div>
         </div>
-    {% else %}
-        <p>T-test could not be performed. Requires at least 2 responses in each group.</p>
-        <p>Group 1 Count: {{ group1_count }}, Group 2 Count: {{ group2_count }}</p>
-    {% endif %}
+    </div>
 
 </div>
 {% endblock %}
