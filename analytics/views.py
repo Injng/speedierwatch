@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.db.models import Avg, Count, Min, Max, StdDev
 from study.models import QuizResponse
 from scipy import stats
+import numpy as np
 
 
 def statistics_view(request):
@@ -39,8 +40,30 @@ def statistics_view(request):
         )
         t_statistic = ttest_result.statistic
         p_value = ttest_result.pvalue
-        ci_result = ttest_result.confidence_interval(confidence_level=0.95)
-        confidence_interval = (ci_result.low, ci_result.high)
+
+        # Calculate confidence interval using scipy.stats.t.interval
+        n1 = len(group1_scores)
+        n2 = len(group2_scores)
+        mean1 = np.mean(group1_scores)
+        mean2 = np.mean(group2_scores)
+        var1 = np.var(group1_scores, ddof=1)
+        var2 = np.var(group2_scores, ddof=1)
+
+        # Degrees of freedom using Welch-Satterthwaite equation
+        df = ((var1 / n1 + var2 / n2) ** 2) / (
+            (var1 / n1) ** 2 / (n1 - 1) + (var2 / n2) ** 2 / (n2 - 1)
+        )
+
+        # Standard error of difference between means
+        se = np.sqrt(var1 / n1 + var2 / n2)
+
+        # Mean difference
+        mean_diff = mean1 - mean2
+
+        # Calculate 95% confidence interval using scipy.stats.t.interval
+        alpha = 0.05
+        ci_lower, ci_upper = stats.t.interval(1 - alpha, df, loc=mean_diff, scale=se)
+        confidence_interval = (ci_lower, ci_upper)
 
     context = {
         "total_responses": total_responses,
