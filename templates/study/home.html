@@ -22,7 +22,7 @@
                     {% if referred_by %}
                     <div class="alert alert-success mb-3">
                         <i class="bi bi-person-check-fill me-2"></i>
-                        You were referred by <strong>{{ referred_by.name }}</strong>. They'll receive a bonus of 20% of your raffle tickets when you complete this study!
+                        You were referred by <strong>{{ referred_by.name|slice:":1" }}.</strong> They'll receive a bonus of 20% of your raffle tickets when you complete this study!
                     </div>
                     {% endif %}
                     <p class="text-muted">

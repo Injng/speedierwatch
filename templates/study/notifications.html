@@ -18,7 +18,7 @@
       <div class="d-flex">
         <div class="toast-body">
           <i class="bi bi-check-circle-fill me-2"></i>
-          <strong>Success!</strong> You successfully used {{ referral_source }}'s referral link.
+          <strong>Success!</strong> You successfully used {{ referral_source|slice:":1" }}.'s referral link.
         </div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
