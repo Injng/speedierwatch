@@ -2,11 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Participant, QuizResponse
 from .forms import ParticipantForm, QuizForm
+from pathlib import Path
 import random
 import json
-import os
-from pathlib import Path
-from django.conf import settings
 
 
 def home(request):
@@ -53,7 +51,7 @@ def invalidate_participant(request):
         finally:
             # Clear session
             request.session.flush()
-    
+
     return render(request, "study/invalidated.html")
 
 
@@ -65,26 +63,41 @@ def quiz(request):
 
     participant = Participant.objects.get(id=participant_id)
 
+    json_path = Path(__file__).parent / "data" / "questions.json"
+    with open(json_path) as f:
+        questions_data = json.load(f)["questions"]
+
+    random.shuffle(questions_data)
+    request.session["shuffled_questions"] = questions_data
+
     if request.method == "POST":
-        form = QuizForm(request.POST)
+        form = QuizForm(
+            request.POST,
+            questions_to_display=request.session.get("shuffled_questions", []),
+        )
         if form.is_valid():
-            # Load questions from JSON
-            json_path = Path(__file__).parent / "data" / "questions.json"
-            with open(json_path) as f:
-                questions_data = json.load(f)
-            
-            # Calculate score
             score = 0
-            for i, question in enumerate(questions_data["questions"]):
-                if form.cleaned_data[f"question_{i}"] == question["correct_answer"]:
+            shuffled_questions_from_session = request.session.get(
+                "shuffled_questions", []
+            )
+
+            for i, question_data in enumerate(shuffled_questions_from_session):
+                user_answer_key = form.cleaned_data.get(f"question_{i}")
+
+                original_correct_answer_letter = question_data["correct_answer"]
+
+                if user_answer_key == original_correct_answer_letter:
                     score += 1
 
             QuizResponse.objects.create(participant=participant, score=score)
+            del request.session["shuffled_questions"]
             return redirect("study:results")
     else:
-        form = QuizForm()
+        form = QuizForm(questions_to_display=questions_data)
 
-    return render(request, "study/quiz.html", {"form": form})
+    return render(
+        request, "study/quiz.html", {"form": form, "participant": participant}
+    )
 
 
 def results(request):

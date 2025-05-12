@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Quiz Statistics{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Quiz Statistics</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Overall Statistics
+        </div>
+        <div class="card-body text-center">
+            <div class="py-4">
+                <i class="bi bi-graph-up fs-1 text-primary mb-3"></i>
+                <h3>Overall statistics will be shown at the end of the survey</h3>
+                <p class="text-muted">Thank you for participating in our study</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>Statistics by Treatment Group</h2>
+    <div class="card mb-3">
+        <div class="card-header">
+            Group Statistics
+        </div>
+        <div class="card-body text-center">
+            <div class="py-4">
+                <i class="bi bi-bar-chart-line fs-1 text-primary mb-3"></i>
+                <h3>Group statistics will be shown at the end of the survey</h3>
+                <p class="text-muted">Complete the survey to view detailed results</p>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <h2>T-Test Results (Group 1 vs Group 2)</h2>
+    <div class="card mb-4">
+        <div class="card-header">
+            Hypothesis Test Results
+        </div>
+        <div class="card-body text-center">
+            <div class="py-4">
+                <i class="bi bi-clock-history fs-1 text-primary mb-3"></i>
+                <h3>Results will be shown at the end of the survey</h3>
+                <p class="text-muted">Thank you for your patience</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

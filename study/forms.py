@@ -1,7 +1,6 @@
 from django import forms
 from .models import Participant
-import json
-from pathlib import Path
+import random
 
 
 class ParticipantForm(forms.ModelForm):
@@ -16,22 +15,25 @@ class ParticipantForm(forms.ModelForm):
 
 class QuizForm(forms.Form):
     def __init__(self, *args, **kwargs):
+        questions_to_display = kwargs.pop("questions_to_display", [])
         super().__init__(*args, **kwargs)
-        
-        # Load questions from JSON file
-        json_path = Path(__file__).parent / "data" / "questions.json"
-        with open(json_path) as f:
-            questions_data = json.load(f)
-        
-        # Create form fields for each question
-        for i, question in enumerate(questions_data["questions"]):
-            self.fields[f"question_{i}"] = forms.ChoiceField(
-                label=question["text"],
-                choices=[
-                    ("A", question["option_a"]),
-                    ("B", question["option_b"]),
-                    ("C", question["option_c"]),
-                    ("D", question["option_d"]),
-                ],
+        self.ordered_correct_answers = []
+
+        for i, question_data in enumerate(questions_to_display):
+            field_name = f"question_{i}"
+
+            options = [
+                ("A", question_data["option_a"]),
+                ("B", question_data["option_b"]),
+                ("C", question_data["option_c"]),
+                ("D", question_data["option_d"]),
+            ]
+            random.shuffle(options)
+
+            self.fields[field_name] = forms.ChoiceField(
+                label=question_data["text"],
+                choices=options,
                 widget=forms.RadioSelect(attrs={"class": "form-check-input"}),
+                required=True,
             )
+            self.ordered_correct_answers.append(question_data["correct_answer"])
