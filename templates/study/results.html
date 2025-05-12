@@ -2,6 +2,24 @@
 
 {% block title %}Results - SpeedierWatch Study{% endblock %}
 
+{% block extra_js %}
+<script>
+function copyReferralLink() {
+    var copyText = document.getElementById("referralLink");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value);
+
+    var button = copyText.nextElementSibling;
+    var originalHTML = button.innerHTML;
+    button.innerHTML = '<i class="bi bi-check-circle me-1"></i> Copied!';
+    setTimeout(function() {
+        button.innerHTML = originalHTML;
+    }, 2000);
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-8">
@@ -47,6 +65,23 @@
                             You watched the video at {{ participant.treatment_group }}x speed
                         </p>
                     </div>
+
+                    <div class="row justify-content-center mb-4 mt-3">
+                        <div class="col-md-6">
+                            <div class="card bg-light border-0">
+                                <div class="card-body p-4">
+                                    <h5 class="text-muted mb-3">Raffle Tickets Earned</h5>
+                                    <div class="display-4 fw-bold text-success">
+                                        {{ quiz_response.raffle_tickets|floatformat:2 }}
+                                    </div>
+                                    <p class="text-muted mt-2">
+                                        <i class="bi bi-ticket-perforated me-2"></i>
+                                        You earn 2 × n tickets for n correct answers, plus 20% from referrals!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card bg-light border-0 mb-4">
@@ -63,14 +98,55 @@
                     </div>
                 </div>
 
+                <div class="card bg-light border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h4 class="card-title d-flex align-items-center mb-3">
+                            <i class="bi bi-share-fill text-primary me-2"></i>
+                            Share &amp; Earn More Tickets
+                        </h4>
+                        <p>
+                            Share your unique referral link with friends! For each person who completes the study using your link,
+                            you'll earn an additional 20% of their raffle tickets as a bonus! This also applies to anyone they refer
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#referralInfoModal">(up to 5 levels deep)! <i class="bi bi-info-circle text-primary"></i></a>
+                        </p>
+
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" value="{{ referral_url }}" id="referralLink" readonly>
+                            <button class="btn btn-primary" type="button" onclick="copyReferralLink()">
+                                <i class="bi bi-clipboard me-1"></i> Copy
+                            </button>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-3 mt-3">
+                            <a href="https://twitter.com/intent/tweet?text=Join%20this%20educational%20study%20about%20video%20playback%20speed!&url={{ referral_url|urlencode }}" target="_blank" class="btn btn-outline-primary">
+                                <i class="bi bi-twitter me-1"></i> Twitter
+                            </a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ referral_url|urlencode }}" target="_blank" class="btn btn-outline-primary">
+                                <i class="bi bi-facebook me-1"></i> Facebook
+                            </a>
+                            <a href="mailto:?subject=Join%20this%20educational%20study&body=I%20thought%20you%20might%20be%20interested%20in%20this%20educational%20study%20about%20video%20playback%20speed.%20You%20can%20participate%20here:%20{{ referral_url|urlencode }}" class="btn btn-outline-primary">
+                                <i class="bi bi-envelope me-1"></i> Email
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="text-center mt-4">
-                    <a href="{% url 'study:home' %}" class="btn btn-outline-primary">
-                        <i class="bi bi-house-door me-2"></i>
-                        Return to Home
-                    </a>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'study:home' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-house-door me-2"></i>
+                            Return to Home
+                        </a>
+                        <a href="{% url 'study:leaderboard' %}" class="btn btn-primary">
+                            <i class="bi bi-trophy me-2"></i>
+                            View Leaderboard
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+{% include "study/referral_info.html" %}
 {% endblock %}

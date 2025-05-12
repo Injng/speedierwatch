@@ -1,0 +1,40 @@
+{% load static %}
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  {% if referred_bonus_earned %}
+    <div class="toast align-items-center text-white bg-success border-0" id="referralToast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="bi bi-gift-fill me-2"></i>
+          <strong>Bonus Earned!</strong> You received {{ referred_bonus_earned }} raffle tickets from your referral!
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if referral_success %}
+    <div class="toast align-items-center text-white bg-success border-0" id="referralSuccessToast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <strong>Success!</strong> You successfully used {{ referral_source }}'s referral link.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var toastElements = document.querySelectorAll('.toast');
+    toastElements.forEach(function(toastElement) {
+      var toast = new bootstrap.Toast(toastElement, {
+        autohide: true,
+        delay: 5000
+      });
+      toast.show();
+    });
+  });
+</script>

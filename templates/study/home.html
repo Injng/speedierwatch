@@ -19,25 +19,49 @@
                         This study investigates the impact of video playback speed on learning outcomes.
                     </p>
                     <hr class="my-4">
+                    {% if referred_by %}
+                    <div class="alert alert-success mb-3">
+                        <i class="bi bi-person-check-fill me-2"></i>
+                        You were referred by <strong>{{ referred_by.name }}</strong>. They'll receive a bonus of 20% of your raffle tickets when you complete this study!
+                    </div>
+                    {% endif %}
                     <p class="text-muted">
                         Your participation helps advance our understanding of educational video optimization.
                     </p>
                 </div>
 
-                <div class="card bg-light mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="bi bi-info-circle me-2"></i>
-                            What to expect
-                        </h5>
-                        <ul class="mb-0">
-                            <li>Watch a short educational video</li>
-                            <li>Complete a brief quiz about the content</li>
-                            <li>View your results and study information</li>
-                        </ul>
-                        <div class="mt-3 text-muted">
-                            <i class="bi bi-clock me-1"></i>
-                            Estimated duration: 3 minutes
+                <div class="row mb-4">
+                    <div class="col-md-8 mb-3 mb-md-0">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    What to expect
+                                </h5>
+                                <ul class="mb-0">
+                                    <li>Watch a short educational video</li>
+                                    <li>Complete a brief quiz about the content</li>
+                                    <li>View your results and study information</li>
+                                    <li>Earn raffle tickets based on your performance</li>
+                                </ul>
+                                <div class="mt-3 text-muted">
+                                    <i class="bi bi-clock me-1"></i>
+                                    Estimated duration: 3 minutes
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-primary text-white h-100">
+                            <div class="card-body text-center d-flex flex-column justify-content-center">
+                                <i class="bi bi-trophy display-4 mb-3"></i>
+                                <h5 class="card-title">Check the Leaderboard</h5>
+                                <p class="mb-3">See who's leading the raffle!</p>
+                                <a href="{% url 'study:leaderboard' %}" class="btn btn-light">
+                                    <i class="bi bi-bar-chart-fill me-1"></i>
+                                    View Standings
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
