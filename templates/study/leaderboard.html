@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Leaderboard - SpeedierWatch Study{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white py-3">
+                <h2 class="text-center mb-0">
+                    <i class="bi bi-trophy me-2"></i>
+                    Raffle Ticket Leaderboard
+                </h2>
+            </div>
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <p class="lead">
+                        See who's leading in raffle tickets and improve your chances by referring friends!
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#referralInfoModal">Learn how the referral system works <i class="bi bi-info-circle text-primary"></i></a>
+                    </p>
+
+                    <div class="row align-items-center justify-content-center mt-4 mb-5">
+                        <div class="col-md-4">
+                            <div class="card bg-light border-0">
+                                <div class="card-body p-3 text-center">
+                                    <h5 class="text-muted mb-1">Total Participants</h5>
+                                    <div class="display-4 fw-bold text-primary">{{ total_participants }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light border-0">
+                                <div class="card-body p-3 text-center">
+                                    <h5 class="text-muted mb-1">Total Tickets</h5>
+                                    <div class="display-4 fw-bold text-primary">{{ total_tickets|floatformat:2 }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Score</th>
+                                <th scope="col">Tickets</th>
+                                <th scope="col">Referrals</th>
+                                <th scope="col" class="text-center">Referral Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for participant in participants %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ participant.name|slice:":2" }}.</td>
+                                    <td>{{ participant.score }}/10</td>
+                                    <td class="fw-bold">{{ participant.tickets|floatformat:2 }}</td>
+                                    <td>{{ participant.referral_count }}</td>
+                                    <td class="text-center">
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" class="form-control" value="{{ participant.referral_url }}"
+                                                id="referral-{{ forloop.counter }}" readonly>
+                                            <button class="btn btn-outline-primary" type="button"
+                                                onclick="copyReferralLink('referral-{{ forloop.counter }}')">
+                                                <i class="bi bi-clipboard"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <div class="text-muted">
+                                            <i class="bi bi-info-circle me-2"></i>
+                                            No participants have completed the quiz yet.
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="{% url 'study:home' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-house-door me-2"></i>
+                        Return to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function copyReferralLink(elementId) {
+        var copyText = document.getElementById(elementId);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value);
+
+        var button = copyText.nextElementSibling;
+        var originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check"></i>';
+        setTimeout(function() {
+            button.innerHTML = originalHTML;
+        }, 2000);
+    }
+</script>
+{% endblock %}
+
+{% include "study/referral_info.html" %}

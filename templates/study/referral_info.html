@@ -1,0 +1,121 @@
+<div class="modal fade" id="referralInfoModal" tabindex="-1" aria-labelledby="referralInfoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="referralInfoModalLabel">
+          <i class="bi bi-share-fill me-2"></i>
+          How the Referral System Works
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="mb-4">
+          <h4 class="mb-3">Cascading Referral Rewards</h4>
+          <p>
+            Our referral system rewards you for not just your direct referrals, but for anyone they refer as well!
+            The benefits cascade up to 5 levels deep.
+          </p>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title mb-3">How Tickets Are Calculated</h5>
+
+            <div class="mb-4">
+              <h6 class="text-primary">Base Tickets</h6>
+              <p>You earn <strong>2 tickets</strong> for each correct answer on the quiz.</p>
+              <div class="card bg-light">
+                <div class="card-body">
+                  <div class="d-flex align-items-center">
+                    <div class="me-3">
+                      <i class="bi bi-calculator fs-4 text-primary"></i>
+                    </div>
+                    <div>
+                      <p class="mb-0"><strong>Example:</strong> 7 correct answers = 14 base tickets</p>
+                      <p class="text-muted small mb-0">Calculation: 7 × 2 = 14</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h6 class="text-primary">Referral Bonuses</h6>
+              <p>You receive <strong>20%</strong> of the tickets earned by people you refer, and this continues up to 5 levels deep!</p>
+
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Level</th>
+                      <th>Who</th>
+                      <th>Bonus You Receive</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Level 1</td>
+                      <td>Direct referral (your friend)</td>
+                      <td>20% of their tickets</td>
+                    </tr>
+                    <tr>
+                      <td>Level 2</td>
+                      <td>Your friend's referral</td>
+                      <td>20% of the 20% bonus (4% of original)</td>
+                    </tr>
+                    <tr>
+                      <td>Level 3</td>
+                      <td>Your friend's friend's referral</td>
+                      <td>20% of the Level 2 bonus (0.8% of original)</td>
+                    </tr>
+                    <tr>
+                      <td>Level 4</td>
+                      <td>3 steps removed</td>
+                      <td>20% of the Level 3 bonus (0.16% of original)</td>
+                    </tr>
+                    <tr>
+                      <td>Level 5</td>
+                      <td>4 steps removed</td>
+                      <td>20% of the Level 4 bonus (0.032% of original)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="card bg-light">
+                <div class="card-body">
+                  <h6 class="card-title text-primary">Full Example</h6>
+                  <p class="mb-2">If you refer Alice who scores 8 on the quiz (earning 16 tickets):</p>
+                  <ul class="mb-0">
+                    <li>You get 20% of Alice's tickets: 3.2 tickets</li>
+                    <li>If Alice refers Bob who scores 10 (earning 20 tickets):
+                      <ul>
+                        <li>Alice gets 4 tickets (20% of 20)</li>
+                        <li>You get 0.8 tickets (20% of Alice's 4 tickets)</li>
+                      </ul>
+                    </li>
+                    <li>This continues through more referrals, with each level earning you a smaller percentage</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-info d-flex">
+          <div class="me-3">
+            <i class="bi bi-lightbulb fs-4"></i>
+          </div>
+          <div>
+            <strong>Pro Tip:</strong> To maximize your tickets, refer people who you think will score highly on the quiz and who will also refer others! This creates a network effect that benefits everyone.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it!</button>
+      </div>
+    </div>
+  </div>
+</div>

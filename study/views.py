@@ -5,20 +5,56 @@ from .forms import ParticipantForm, QuizForm
 from pathlib import Path
 import random
 import json
+from decimal import Decimal
 
 
 def home(request):
+    referral_code = request.GET.get("ref")
+    referred_by = None
+
+    if referral_code:
+        try:
+            referred_by = Participant.objects.get(referral_code=referral_code)
+            request.session["referral_code"] = referral_code
+        except Participant.DoesNotExist:
+            pass
+
     if request.method == "POST":
         form = ParticipantForm(request.POST)
         if form.is_valid():
             participant = form.save(commit=False)
             participant.treatment_group = random.randint(1, 2)
+
+            # Set referrer if available
+            if "referral_code" in request.session:
+                try:
+                    referring_participant = Participant.objects.get(
+                        referral_code=request.session["referral_code"]
+                    )
+                    participant.referred_by = referring_participant
+                except Participant.DoesNotExist:
+                    pass
+
             participant.save()
             request.session["participant_id"] = participant.id
             return redirect("study:video")
     else:
         form = ParticipantForm()
-    return render(request, "study/home.html", {"form": form})
+
+    # Check if there's a referral bonus notification to show
+    referred_bonus_earned = None
+    if "referred_bonus_earned" in request.session:
+        referred_bonus_earned = request.session["referred_bonus_earned"]
+        del request.session["referred_bonus_earned"]  # Clear after showing
+
+    context = {
+        "form": form,
+        "referred_by": referred_by,
+        "referred_bonus_earned": referred_bonus_earned,
+        "referral_success": True if referred_by else False,
+        "referral_source": referred_by.name if referred_by else None,
+    }
+    return render(request, "study/home.html", context)
 
 
 def video(request):
@@ -89,7 +125,11 @@ def quiz(request):
                 if user_answer_key == original_correct_answer_letter:
                     score += 1
 
-            QuizResponse.objects.create(participant=participant, score=score)
+            # Calculate raffle tickets: 2 times the score (as decimal)
+            raffle_tickets = Decimal("2") * score
+            QuizResponse.objects.create(
+                participant=participant, score=score, raffle_tickets=raffle_tickets
+            )
             del request.session["shuffled_questions"]
             return redirect("study:results")
     else:
@@ -109,8 +149,105 @@ def results(request):
     participant = Participant.objects.get(id=participant_id)
     quiz_response = QuizResponse.objects.get(participant=participant)
 
+    # Check if this completion was through a referral and process cascading rewards
+    if participant.referred_by:
+        # Apply cascading referral rewards - each level gets 20% of the tickets from their referral
+        current_referral = participant.referred_by
+        current_bonus = quiz_response.raffle_tickets
+        referral_level = 1
+
+        while current_referral and referral_level <= 5:  # Limit to 5 levels deep
+            try:
+                referring_quiz_response = QuizResponse.objects.get(
+                    participant=current_referral
+                )
+                # Calculate bonus for this level (20% of previous level's tickets)
+                level_bonus = current_bonus * Decimal("0.2")
+
+                # Update referrer's tickets
+                referring_quiz_response.raffle_tickets += level_bonus
+                referring_quiz_response.save()
+
+                # Store info for the direct referrer only
+                if referral_level == 1:
+                    request.session["referred_bonus_earned"] = str(level_bonus)
+
+                # Set up for next level in the chain
+                current_bonus = level_bonus
+                current_referral = current_referral.referred_by
+                referral_level += 1
+            except QuizResponse.DoesNotExist:
+                break
+
+    # Generate site URL for referral link
+    site_url = request.build_absolute_uri("/").rstrip("/")
+    referral_url = f"{site_url}?ref={participant.referral_code}"
+
+    # Check if a referral was used
+    referral_success = participant.referred_by is not None
+    referral_source = participant.referred_by.name if participant.referred_by else None
+
+    # Ensure referred_bonus_earned is properly formatted for template
+    if "referred_bonus_earned" in request.session:
+        # Store as string to avoid serialization issues
+        if not isinstance(request.session["referred_bonus_earned"], str):
+            request.session["referred_bonus_earned"] = str(
+                request.session["referred_bonus_earned"]
+            )
+
     return render(
         request,
         "study/results.html",
-        {"participant": participant, "quiz_response": quiz_response},
+        {
+            "participant": participant,
+            "quiz_response": quiz_response,
+            "referral_url": referral_url,
+            "referral_success": referral_success,
+            "referral_source": referral_source,
+        },
+    )
+
+
+def leaderboard(request):
+    """
+    Display a leaderboard of participants and their raffle tickets
+    """
+    # Get all participants who have completed the quiz
+    participants_with_quiz = (
+        QuizResponse.objects.select_related("participant")
+        .all()
+        .order_by("-raffle_tickets")
+    )
+
+    # Generate referral URLs for each participant
+    site_url = request.build_absolute_uri("/").rstrip("/")
+    participants_data = []
+
+    for quiz_response in participants_with_quiz:
+        participant = quiz_response.participant
+        referral_url = f"{site_url}?ref={participant.referral_code}"
+
+        # Count the number of referrals this participant has made
+        referral_count = Participant.objects.filter(referred_by=participant).count()
+
+        participants_data.append(
+            {
+                "name": participant.name,
+                "score": quiz_response.score,
+                "tickets": float(
+                    quiz_response.raffle_tickets
+                ),  # Convert Decimal to float for template
+                "referral_url": referral_url,
+                "referral_count": referral_count,
+            }
+        )
+
+    return render(
+        request,
+        "study/leaderboard.html",
+        {
+            "participants": participants_data,
+            "total_participants": len(participants_data),
+            "total_tickets": float(sum(p["tickets"] for p in participants_data)),
+        },
     )

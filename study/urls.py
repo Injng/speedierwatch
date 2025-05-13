@@ -9,4 +9,5 @@ urlpatterns = [
     path("quiz/", views.quiz, name="quiz"),
     path("results/", views.results, name="results"),
     path("invalidated/", views.invalidate_participant, name="invalidated"),
+    path("leaderboard/", views.leaderboard, name="leaderboard"),
 ]
