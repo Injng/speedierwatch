@@ -55,7 +55,7 @@
                             {% for participant in participants %}
                                 <tr>
                                     <th scope="row">{{ forloop.counter }}</th>
-                                    <td>{{ participant.name|slice:":1" }}.</td>
+                                    <td>{{ participant.name|slice:":2" }}.</td>
                                     <td>{{ participant.score }}/10</td>
                                     <td class="fw-bold">{{ participant.tickets|floatformat:2 }}</td>
                                     <td>{{ participant.referral_count }}</td>
