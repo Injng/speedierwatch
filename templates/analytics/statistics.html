@@ -4,49 +4,214 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Quiz Statistics</h1>
+    <h1 class="mb-4 text-center">Study Statistics</h1>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            Overall Statistics
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="bi bi-bar-chart-line-fill me-2"></i>Overall Statistics</h4>
         </div>
-        <div class="card-body text-center">
-            <div class="py-4">
-                <i class="bi bi-graph-up fs-1 text-primary mb-3"></i>
-                <h3>Overall statistics will be shown at the end of the survey</h3>
-                <p class="text-muted">Thank you for participating in our study</p>
-            </div>
+        <div class="card-body">
+            {% if total_responses > 0 %}
+                <div class="row text-center">
+                    <div class="col-md-3 col-6 mb-3">
+                        <h5><i class="bi bi-people-fill text-primary me-1"></i>Responses</h5>
+                        <p class="fs-4">{{ total_responses }}</p>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <h5><i class="bi bi-bullseye text-success me-1"></i>Avg. Score</h5>
+                        <p class="fs-4">{{ average_score|floatformat:2|default:"N/A" }}{% if average_score is not None %} / 10{% endif %}</p>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <h5><i class="bi bi-arrow-down-circle-fill text-danger me-1"></i>Min Score</h5>
+                        <p class="fs-4">{{ min_score|default:"N/A" }}{% if min_score is not None %} / 10{% endif %}</p>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <h5><i class="bi bi-arrow-up-circle-fill text-info me-1"></i>Max Score</h5>
+                        <p class="fs-4">{{ max_score|default:"N/A" }}{% if max_score is not None %} / 10{% endif %}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row text-center mt-3">
+                    <div class="col-md-4 col-sm-12 mb-3">
+                        <h6><i class="bi bi-graph-down text-secondary me-1"></i>Q1 (25th Pctl)</h6>
+                        <p class="fs-5">{{ q1_overall|floatformat:2|default:"N/A" }}{% if q1_overall is not None %} / 10{% endif %}</p>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mb-3">
+                        <h6><i class="bi bi-graph-up text-secondary me-1"></i>Median (50th Pctl)</h6>
+                        <p class="fs-5">{{ median_overall|floatformat:2|default:"N/A" }}{% if median_overall is not None %} / 10{% endif %}</p>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mb-3">
+                        <h6><i class="bi bi-graph-up-arrow text-secondary me-1"></i>Q3 (75th Pctl)</h6>
+                        <p class="fs-5">{{ q3_overall|floatformat:2|default:"N/A" }}{% if q3_overall is not None %} / 10{% endif %}</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-hourglass-split fs-1 text-muted mb-3"></i>
+                    <p class="lead">No responses recorded yet.</p>
+                </div>
+            {% endif %}
         </div>
     </div>
 
-    <h2>Statistics by Treatment Group</h2>
-    <div class="card mb-3">
-        <div class="card-header">
-            Group Statistics
-        </div>
-        <div class="card-body text-center">
-            <div class="py-4">
-                <i class="bi bi-bar-chart-line fs-1 text-primary mb-3"></i>
-                <h3>Group statistics will be shown at the end of the survey</h3>
-                <p class="text-muted">Complete the survey to view detailed results</p>
+    <h2 class="mb-3 text-center">Statistics by Treatment Group</h2>
+    <div class="row">
+        {% for group_stats in responses_by_treatment_group %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header {% if group_stats.participant__treatment_group == 1 %}bg-info text-dark{% else %}bg-warning text-dark{% endif %}">
+                    <h5 class="mb-0"><i class="bi bi-collection-fill me-2"></i>Group {{ group_stats.participant__treatment_group }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if group_stats.count > 0 %}
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Participants: <span class="badge bg-secondary rounded-pill">{{ group_stats.count }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Average Score: <span class="badge bg-primary rounded-pill">{{ group_stats.avg_score|floatformat:2|default:"N/A" }}{% if group_stats.avg_score is not None %} / 10{% endif %}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Min Score: <span class="badge bg-danger rounded-pill">{{ group_stats.min_score|default:"N/A" }}{% if group_stats.min_score is not None %} / 10{% endif %}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Max Score: <span class="badge bg-success rounded-pill">{{ group_stats.max_score|default:"N/A" }}{% if group_stats.max_score is not None %} / 10{% endif %}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Std. Deviation: <span class="badge bg-info rounded-pill">{{ group_stats.std_dev_score|floatformat:2|default:"N/A" }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Q1 Score: <span class="badge bg-light text-dark border rounded-pill">{{ group_stats.q1_score|floatformat:2|default:"N/A" }}{% if group_stats.q1_score is not None %} / 10{% endif %}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Median Score: <span class="badge bg-light text-dark border rounded-pill">{{ group_stats.median_score|floatformat:2|default:"N/A" }}{% if group_stats.median_score is not None %} / 10{% endif %}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Q3 Score: <span class="badge bg-light text-dark border rounded-pill">{{ group_stats.q3_score|floatformat:2|default:"N/A" }}{% if group_stats.q3_score is not None %} / 10{% endif %}</span>
+                            </li>
+                        </ul>
+                    {% else %}
+                        <p class="text-center text-muted py-3">No responses for this group yet.</p>
+                    {% endif %}
+                </div>
             </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-bar-chart-steps fs-1 text-muted mb-3"></i>
+                    <p class="lead">No group data available.</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <hr class="my-5">
+
+    <h2 class="mb-3 text-center">T-Test Results (Group 1 vs Group 2)</h2>
+    <p class="text-center text-muted mb-4">Hypothesis: Mean score of Group 1 is greater than Mean score of Group 2.</p>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0"><i class="bi bi-clipboard-data-fill me-2"></i>Hypothesis Test Details</h4>
+        </div>
+        <div class="card-body">
+            {% if group1_count >= 2 and group2_count >= 2 and t_statistic is not None and p_value is not None %}
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="p-3 bg-light rounded border">
+                            <strong>T-statistic:</strong>
+                            <p class="fs-5 mb-0">{{ t_statistic|floatformat:3 }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="p-3 bg-light rounded border">
+                            <strong>P-value:</strong>
+                            <p class="fs-5 mb-0">{{ p_value|floatformat:3 }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="p-3 bg-light rounded border">
+                            <strong>Degrees of Freedom:</strong>
+                            <p class="fs-5 mb-0">{{ df|floatformat:2|default:"N/A" }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="p-3 bg-light rounded border">
+                            <strong>Cohen's d:</strong>
+                            <p class="fs-5 mb-0">{{ cohens_d|floatformat:2|default:"N/A" }}</p>
+                            <small class="text-muted">
+                                {% if cohens_d %}
+                                    {% if cohens_d >= 1.2 %}
+                                        Very large effect
+                                    {% elif cohens_d >= 0.8 %}
+                                        Large effect
+                                    {% elif cohens_d >= 0.5 %}
+                                        Medium effect
+                                    {% elif cohens_d >= 0.2 %}
+                                        Small effect
+                                    {% else %}
+                                        Negligible effect
+                                    {% endif %}
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-light rounded border">
+                            <strong>Alpha Level:</strong>
+                            <p class="fs-5 mb-0">{{ alpha }}</p>
+                        </div>
+                    </div>
+                    {% if confidence_interval and confidence_interval.0 is not None and confidence_interval.1 is not None %}
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-light rounded border">
+                            <strong>95% CI for Difference (Mean1 - Mean2):</strong>
+                            <p class="fs-5 mb-0">({{ confidence_interval.0|floatformat:3 }}, {{ confidence_interval.1|floatformat:3 }})</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-light rounded border">
+                            <strong>95% CI for Difference:</strong>
+                            <p class="fs-5 mb-0 text-muted">Not calculable</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="mt-3 alert {% if p_value < alpha %}alert-success{% else %}alert-warning{% endif %}" role="alert">
+                    <h5 class="alert-heading">Result:</h5>
+                    {% if p_value < alpha %}
+                        <p class="mb-0"><strong>Statistically significant.</strong> We reject the null hypothesis. There is evidence to suggest that the mean score of Group 1 is greater than the mean score of Group 2.</p>
+                    {% else %}
+                        <p class="mb-0"><strong>Not statistically significant.</strong> We fail to reject the null hypothesis. There is not enough evidence to suggest that the mean score of Group 1 is greater than the mean score of Group 2 at the {{ alpha|floatformat:2 }} significance level.</p>
+                    {% endif %}
+                </div>
+            {% elif group1_count < 2 or group2_count < 2 %}
+                <div class="text-center py-4">
+                    <i class="bi bi-exclamation-triangle-fill fs-1 text-warning mb-3"></i>
+                    <p class="lead">Insufficient Data for T-Test</p>
+                    <p class="text-muted">
+                        At least two participants are needed in each group to perform the t-test. <br>
+                        Group 1 count: {{ group1_count }}, Group 2 count: {{ group2_count }}.
+                    </p>
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-hourglass-split fs-1 text-muted mb-3"></i>
+                    <p class="lead">T-Test results are not available.</p>
+                     <p class="text-muted">This might be due to insufficient data or an issue in calculations.</p>
+                </div>
+            {% endif %}
         </div>
     </div>
 
-    <hr class="my-4">
-
-    <h2>T-Test Results (Group 1 vs Group 2)</h2>
-    <div class="card mb-4">
-        <div class="card-header">
-            Hypothesis Test Results
-        </div>
-        <div class="card-body text-center">
-            <div class="py-4">
-                <i class="bi bi-clock-history fs-1 text-primary mb-3"></i>
-                <h3>Results will be shown at the end of the survey</h3>
-                <p class="text-muted">Thank you for your patience</p>
-            </div>
-        </div>
+    <div class="text-center mt-4 mb-5">
+        <a href="{% url 'study:home' %}" class="btn btn-secondary btn-lg"><i class="bi bi-house-door-fill me-2"></i>Back to Home</a>
     </div>
 
 </div>
