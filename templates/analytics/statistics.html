@@ -171,13 +171,13 @@
                     <div class="col-md-3 mb-3">
                         <div class="p-3 bg-light rounded border h-100">
                             <strong>Degrees of Freedom:</strong>
-                            <p class="fs-5 mb-0">{{ df|floatformat:2|default:"N/A" }}</p>
+                            <p class="fs-5 mb-0">{% if df is not None and df == df %}{{ df|floatformat:2 }}{% else %}N/A{% endif %}</p>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
                         <div class="p-3 bg-light rounded border h-100">
                             <strong>Cohen's d:</strong>
-                            <p class="fs-5 mb-0">{{ cohens_d|floatformat:2|default:"N/A" }}</p>
+                            <p class="fs-5 mb-0">{% if cohens_d is not None and cohens_d == cohens_d %}{{ cohens_d|floatformat:2 }}{% else %}N/A{% endif %}</p>
                             <small class="text-muted">
                                 {% if cohens_d is not None and cohens_d == cohens_d %}
                                     {% if cohens_d >= 1.2 %}Very large effect
