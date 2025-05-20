@@ -32,17 +32,21 @@
                 </div>
                 <hr>
                 <div class="row text-center mt-3">
-                    <div class="col-md-4 col-sm-12 mb-3">
+                    <div class="col-md-3 col-6 mb-3">
                         <h6><i class="bi bi-graph-down text-secondary me-1"></i>Q1 (25th Pctl)</h6>
                         <p class="fs-5">{{ q1_overall|floatformat:2|default:"N/A" }}{% if q1_overall is not None and q1_overall == q1_overall %} / 10{% endif %}</p>
                     </div>
-                    <div class="col-md-4 col-sm-12 mb-3">
+                    <div class="col-md-3 col-6 mb-3">
                         <h6><i class="bi bi-graph-up text-secondary me-1"></i>Median (50th Pctl)</h6>
                         <p class="fs-5">{{ median_overall|floatformat:2|default:"N/A" }}{% if median_overall is not None and median_overall == median_overall %} / 10{% endif %}</p>
                     </div>
-                    <div class="col-md-4 col-sm-12 mb-3">
+                    <div class="col-md-3 col-6 mb-3">
                         <h6><i class="bi bi-graph-up-arrow text-secondary me-1"></i>Q3 (75th Pctl)</h6>
                         <p class="fs-5">{{ q3_overall|floatformat:2|default:"N/A" }}{% if q3_overall is not None and q3_overall == q3_overall %} / 10{% endif %}</p>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <h6><i class="bi bi-rulers text-secondary me-1"></i>Std. Deviation</h6>
+                        <p class="fs-5">{% if std_dev_overall is not None and std_dev_overall == std_dev_overall %}{{ std_dev_overall|floatformat:2 }}{% else %}N/A{% endif %}</p>
                     </div>
                 </div>
             {% else %}
