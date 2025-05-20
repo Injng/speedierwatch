@@ -4,22 +4,39 @@ from study.models import QuizResponse
 from scipy import stats
 import numpy as np
 import logging
+from collections import Counter
 
 logger = logging.getLogger(__name__)
 
+
+def get_score_distribution(scores_list):
+    if not scores_list:
+        return [0] * 11
+    counts = Counter(int(s) for s in scores_list if s is not None)
+    distribution = [counts.get(i, 0) for i in range(11)]
+    return distribution
 
 def statistics_view(request):
     total_responses = QuizResponse.objects.count()
     all_scores_qs = QuizResponse.objects.values_list("score", flat=True)
     all_scores = [float(s) for s in all_scores_qs if s is not None]
 
-    average_score = np.mean(all_scores)
-    min_score = np.min(all_scores)
-    max_score = np.max(all_scores)
-    q1_overall = np.percentile(all_scores, 25)
-    median_overall = np.percentile(all_scores, 50)
-    q3_overall = np.percentile(all_scores, 75)
-    std_dev_overall = np.std(all_scores, ddof=1) if len(all_scores) > 1 else np.nan
+    if all_scores:
+        average_score = np.mean(all_scores)
+        min_score = np.min(all_scores)
+        max_score = np.max(all_scores)
+        q1_overall = np.percentile(all_scores, 25)
+        median_overall = np.percentile(all_scores, 50)
+        q3_overall = np.percentile(all_scores, 75)
+        std_dev_overall = np.std(all_scores, ddof=1) if len(all_scores) > 1 else (0.0 if len(all_scores) == 1 else np.nan)
+    else:
+        average_score = np.nan
+        min_score = np.nan
+        max_score = np.nan
+        q1_overall = np.nan
+        median_overall = np.nan
+        q3_overall = np.nan
+        std_dev_overall = np.nan
 
     responses_by_treatment_group = (
         QuizResponse.objects.values("participant__treatment_group")
@@ -39,9 +56,15 @@ def statistics_view(request):
         ).values_list("score", flat=True)
         group_scores = [float(s) for s in group_scores_qs if s is not None]
 
-        group_stats["q1_score"] = np.percentile(group_scores, 25)
-        group_stats["median_score"] = np.percentile(group_scores, 50)
-        group_stats["q3_score"] = np.percentile(group_scores, 75)
+        if group_scores:
+            group_stats["q1_score"] = np.percentile(group_scores, 25)
+            group_stats["median_score"] = np.percentile(group_scores, 50)
+            group_stats["q3_score"] = np.percentile(group_scores, 75)
+        else:
+            group_stats["q1_score"] = np.nan
+            group_stats["median_score"] = np.nan
+            group_stats["q3_score"] = np.nan
+
 
     group1_scores_qs = QuizResponse.objects.filter(
         participant__treatment_group=1
@@ -53,12 +76,15 @@ def statistics_view(request):
     group1_scores = [float(s) for s in group1_scores_qs if s is not None]
     group2_scores = [float(s) for s in group2_scores_qs if s is not None]
 
-    ttest_result = None
-    confidence_interval = None
-    p_value = None
+    overall_score_distribution = get_score_distribution(all_scores)
+    group1_score_distribution = get_score_distribution(group1_scores)
+    group2_score_distribution = get_score_distribution(group2_scores)
+
     t_statistic = None
+    p_value = None
     df = None
     cohens_d = None
+    confidence_interval = None
     alpha = 0.05
 
     if len(group1_scores) >= 2 and len(group2_scores) >= 2:
@@ -69,120 +95,44 @@ def statistics_view(request):
         p_value = ttest_result.pvalue
         df = ttest_result.df
 
-        n1 = len(group1_scores)
-        n2 = len(group2_scores)
-        mean1 = np.mean(group1_scores)
-        mean2 = np.mean(group2_scores)
-        var1 = np.var(group1_scores, ddof=1)
-        var2 = np.var(group2_scores, ddof=1)
+        n1, n2 = len(group1_scores), len(group2_scores)
+        mean1, mean2 = np.mean(group1_scores), np.mean(group2_scores)
+        var1, var2 = np.var(group1_scores, ddof=1), np.var(group2_scores, ddof=1)
 
-        print(f"Cohen's d calculation: n1={n1}, n2={n2}")
-        print(f"Cohen's d calculation: mean1={mean1}, mean2={mean2}")
-        print(f"Cohen's d calculation: var1={var1}, var2={var2}")
+        if var1 > 0 or var2 > 0: # Ensure s_pooled is not NaN or zero if means are different
+            s_pooled_numerator = (n1 - 1) * var1 + (n2 - 1) * var2
+            s_pooled_denominator = n1 + n2 - 2
+            if s_pooled_denominator > 0:
+                 s_pooled = np.sqrt(s_pooled_numerator / s_pooled_denominator)
+                 if s_pooled > 0: # Avoid division by zero if s_pooled is 0
+                    cohens_d = (mean1 - mean2) / s_pooled
+                 else: # If pooled std dev is 0, effect size is undefined or infinite if means differ
+                    cohens_d = np.inf if mean1 != mean2 else 0 
+            else: # Should not happen if n1,n2 >=2
+                cohens_d = np.nan
+        elif mean1 == mean2: # Both variances are zero and means are equal
+             cohens_d = 0
+        else: # Both variances are zero but means differ (unlikely with real data)
+             cohens_d = np.inf
 
-        term1_numerator_pooled_s = (n1 - 1) * var1
-        term2_numerator_pooled_s = (n2 - 1) * var2
-        print(
-            f"Cohen's d calculation: term1_numerator_pooled_s ( (n1-1)*var1 ) = {term1_numerator_pooled_s}"
-        )
-        print(
-            f"Cohen's d calculation: term2_numerator_pooled_s ( (n2-1)*var2 ) = {term2_numerator_pooled_s}"
-        )
-
-        pooled_s_numerator = term1_numerator_pooled_s + term2_numerator_pooled_s
-        pooled_s_denominator = n1 + n2 - 2
-        print(
-            f"Cohen's d calculation: pooled_s_numerator={pooled_s_numerator}, pooled_s_denominator={pooled_s_denominator}"
-        )
-
-        s_pooled = np.sqrt(pooled_s_numerator / pooled_s_denominator)
-        print(f"Cohen's d calculation: s_pooled={s_pooled}")
-
-        mean_difference = mean1 - mean2
-        print(
-            f"Cohen's d calculation: mean_difference (mean1 - mean2) = {mean_difference}"
-        )
-
-        cohens_d = mean_difference / s_pooled
-        print(f"Cohen's d calculation: cohens_d={cohens_d}")
-
-        confidence_level = 1 - alpha
 
         se_diff_squared = (var1 / n1) + (var2 / n2)
-        se_diff = np.sqrt(se_diff_squared)
-
-        confidence_interval = stats.t.interval(
-            confidence_level,
-            df,
-            loc=(mean1 - mean2),
-            scale=se_diff,
-        )
-
-    print("\n=== STUDY STATISTICS ===")
-    print(f"Total Responses: {total_responses}")
-    print(f"Average Score: {average_score} / 10")
-    print(f"Min Score: {min_score} / 10")
-    print(f"Max Score: {max_score} / 10")
-    print(f"Q1 Score: {q1_overall} / 10")
-    print(f"Median Score: {median_overall} / 10")
-    print(f"Q3 Score: {q3_overall} / 10")
-    print(
-        f"Std Dev Score: {std_dev_overall:.2f}"
-        if not np.isnan(std_dev_overall)
-        else "Std Dev Score: N/A"
-    )
-
-    print("\n--- Statistics by Treatment Group ---")
-    for group_stats in responses_by_treatment_group:
-        group_num = group_stats["participant__treatment_group"]
-        print(f"  Group {group_num}:")
-        print(f"    Count: {group_stats['count']}")
-        avg_s = group_stats["avg_score"]
-        print(f"    Average Score: {avg_s:.2f}")
-        print(f"    Min Score: {group_stats['min_score']}")
-        print(f"    Max Score: {group_stats['max_score']}")
-        std_s = group_stats["std_dev_score"]
-        print(f"    Std Dev Score: {std_s:.2f}")
-        q1_s = group_stats["q1_score"]
-        median_s = group_stats["median_score"]
-        q3_s = group_stats["q3_score"]
-        print(f"    Q1 Score: {q1_s:.2f}")
-        print(f"    Median Score: {median_s:.2f}")
-        print(f"    Q3 Score: {q3_s:.2f}")
-
-    print("\n--- T-Test Results (Group 1 vs Group 2, H1: Group 1 > Group 2) ---")
-    if t_statistic is not None and p_value is not None:
-        print(f"  T-statistic: {t_statistic:.3f}")
-        print(f"  P-value: {p_value:.3f}")
-        print(f"  Degrees of Freedom: {df:.2f}")
-        print(f"  Cohen's d: {cohens_d:.3f}")
-        if confidence_interval is not None and confidence_interval[0] is not None:
-            print(
-                f"  95% CI for difference in means (Group 1 - Group 2): ({confidence_interval[0]:.3f}, {confidence_interval[1]:.3f})"
+        if se_diff_squared > 0:
+            se_diff = np.sqrt(se_diff_squared)
+            confidence_interval = stats.t.interval(
+                1 - alpha,
+                df,
+                loc=(mean1 - mean2),
+                scale=se_diff,
             )
         else:
-            print("  95% CI for difference in means: Not calculable or not available")
-        print("  Alpha: 0.05")
-        if p_value < 0.05:
-            print(
-                "  Result: Statistically significant, reject null hypothesis. Evidence suggests Group 1 scores are greater than Group 2 scores."
-            )
-        else:
-            print(
-                "  Result: Not statistically significant, fail to reject null hypothesis. No strong evidence that Group 1 scores are greater than Group 2 scores."
-            )
-    else:
-        print("  T-Test not performed (insufficient data in one or both groups).")
-    print("========================\n")
+            confidence_interval = (np.nan, np.nan)
+
 
     logger.info("=== STUDY STATISTICS ===")
     logger.info(f"Total Responses: {total_responses}")
-    logger.info(f"Average Score: {average_score:.2f} / 10")
-    logger.info(
-        f"Overall Std Dev: {std_dev_overall:.2f}"
-        if not np.isnan(std_dev_overall)
-        else "Overall Std Dev: N/A"
-    )
+    logger.info(f"Average Score: {average_score if not np.isnan(average_score) else 'N/A'}")
+    logger.info(f"Overall Std Dev: {std_dev_overall if not np.isnan(std_dev_overall) else 'N/A'}")
 
     context = {
         "total_responses": total_responses,
@@ -202,9 +152,12 @@ def statistics_view(request):
         "alpha": alpha,
         "group1_count": len(group1_scores),
         "group2_count": len(group2_scores),
-        "group1_mean": np.mean(group1_scores),
-        "group2_mean": np.mean(group2_scores),
-        "group1_std": np.std(group1_scores, ddof=1),
-        "group2_std": np.std(group2_scores, ddof=1),
+        "group1_mean": np.mean(group1_scores) if group1_scores else np.nan,
+        "group2_mean": np.mean(group2_scores) if group2_scores else np.nan,
+        "group1_std": np.std(group1_scores, ddof=1) if len(group1_scores) > 1 else (0.0 if len(group1_scores) == 1 else np.nan),
+        "group2_std": np.std(group2_scores, ddof=1) if len(group2_scores) > 1 else (0.0 if len(group2_scores) == 1 else np.nan),
+        "overall_score_distribution": overall_score_distribution,
+        "group1_score_distribution": group1_score_distribution,
+        "group2_score_distribution": group2_score_distribution,
     }
     return render(request, "analytics/statistics.html", context)
