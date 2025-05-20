@@ -19,30 +19,30 @@
                     </div>
                     <div class="col-md-3 col-6 mb-3">
                         <h5><i class="bi bi-bullseye text-success me-1"></i>Avg. Score</h5>
-                        <p class="fs-4">{{ average_score|floatformat:2|default:"N/A" }}{% if average_score is not None %} / 10{% endif %}</p>
+                        <p class="fs-4">{{ average_score|floatformat:2|default:"N/A" }}{% if average_score is not None and average_score == average_score %} / 10{% endif %}</p>
                     </div>
                     <div class="col-md-3 col-6 mb-3">
                         <h5><i class="bi bi-arrow-down-circle-fill text-danger me-1"></i>Min Score</h5>
-                        <p class="fs-4">{{ min_score|default:"N/A" }}{% if min_score is not None %} / 10{% endif %}</p>
+                        <p class="fs-4">{{ min_score|floatformat:0|default:"N/A" }}{% if min_score is not None and min_score == min_score %} / 10{% endif %}</p>
                     </div>
                     <div class="col-md-3 col-6 mb-3">
                         <h5><i class="bi bi-arrow-up-circle-fill text-info me-1"></i>Max Score</h5>
-                        <p class="fs-4">{{ max_score|default:"N/A" }}{% if max_score is not None %} / 10{% endif %}</p>
+                        <p class="fs-4">{{ max_score|floatformat:0|default:"N/A" }}{% if max_score is not None and max_score == max_score %} / 10{% endif %}</p>
                     </div>
                 </div>
                 <hr>
                 <div class="row text-center mt-3">
                     <div class="col-md-4 col-sm-12 mb-3">
                         <h6><i class="bi bi-graph-down text-secondary me-1"></i>Q1 (25th Pctl)</h6>
-                        <p class="fs-5">{{ q1_overall|floatformat:2|default:"N/A" }}{% if q1_overall is not None %} / 10{% endif %}</p>
+                        <p class="fs-5">{{ q1_overall|floatformat:2|default:"N/A" }}{% if q1_overall is not None and q1_overall == q1_overall %} / 10{% endif %}</p>
                     </div>
                     <div class="col-md-4 col-sm-12 mb-3">
                         <h6><i class="bi bi-graph-up text-secondary me-1"></i>Median (50th Pctl)</h6>
-                        <p class="fs-5">{{ median_overall|floatformat:2|default:"N/A" }}{% if median_overall is not None %} / 10{% endif %}</p>
+                        <p class="fs-5">{{ median_overall|floatformat:2|default:"N/A" }}{% if median_overall is not None and median_overall == median_overall %} / 10{% endif %}</p>
                     </div>
                     <div class="col-md-4 col-sm-12 mb-3">
                         <h6><i class="bi bi-graph-up-arrow text-secondary me-1"></i>Q3 (75th Pctl)</h6>
-                        <p class="fs-5">{{ q3_overall|floatformat:2|default:"N/A" }}{% if q3_overall is not None %} / 10{% endif %}</p>
+                        <p class="fs-5">{{ q3_overall|floatformat:2|default:"N/A" }}{% if q3_overall is not None and q3_overall == q3_overall %} / 10{% endif %}</p>
                     </div>
                 </div>
             {% else %}
@@ -72,22 +72,22 @@
                                 Average Score: <span class="badge bg-primary rounded-pill">{{ group_stats.avg_score|floatformat:2|default:"N/A" }}{% if group_stats.avg_score is not None %} / 10{% endif %}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Min Score: <span class="badge bg-danger rounded-pill">{{ group_stats.min_score|default:"N/A" }}{% if group_stats.min_score is not None %} / 10{% endif %}</span>
+                                Min Score: <span class="badge bg-danger rounded-pill">{{ group_stats.min_score|floatformat:0|default:"N/A" }}{% if group_stats.min_score is not None %} / 10{% endif %}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Max Score: <span class="badge bg-success rounded-pill">{{ group_stats.max_score|default:"N/A" }}{% if group_stats.max_score is not None %} / 10{% endif %}</span>
+                                Max Score: <span class="badge bg-success rounded-pill">{{ group_stats.max_score|floatformat:0|default:"N/A" }}{% if group_stats.max_score is not None %} / 10{% endif %}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 Std. Deviation: <span class="badge bg-info rounded-pill">{{ group_stats.std_dev_score|floatformat:2|default:"N/A" }}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Q1 Score: <span class="badge bg-light text-dark border rounded-pill">{{ group_stats.q1_score|floatformat:2|default:"N/A" }}{% if group_stats.q1_score is not None %} / 10{% endif %}</span>
+                                Q1 Score: <span class="badge bg-light text-dark border rounded-pill">{{ group_stats.q1_score|floatformat:2|default:"N/A" }}{% if group_stats.q1_score is not None and group_stats.q1_score == group_stats.q1_score %} / 10{% endif %}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Median Score: <span class="badge bg-light text-dark border rounded-pill">{{ group_stats.median_score|floatformat:2|default:"N/A" }}{% if group_stats.median_score is not None %} / 10{% endif %}</span>
+                                Median Score: <span class="badge bg-light text-dark border rounded-pill">{{ group_stats.median_score|floatformat:2|default:"N/A" }}{% if group_stats.median_score is not None and group_stats.median_score == group_stats.median_score %} / 10{% endif %}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Q3 Score: <span class="badge bg-light text-dark border rounded-pill">{{ group_stats.q3_score|floatformat:2|default:"N/A" }}{% if group_stats.q3_score is not None %} / 10{% endif %}</span>
+                                Q3 Score: <span class="badge bg-light text-dark border rounded-pill">{{ group_stats.q3_score|floatformat:2|default:"N/A" }}{% if group_stats.q3_score is not None and group_stats.q3_score == group_stats.q3_score %} / 10{% endif %}</span>
                             </li>
                         </ul>
                     {% else %}
@@ -110,6 +110,43 @@
 
     <hr class="my-5">
 
+    <h2 class="mb-3 text-center">Score Distributions</h2>
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Overall Score Distribution</h5>
+                </div>
+                <div class="card-body" style="height: 300px;">
+                    <canvas id="overallScoreChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                     <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Group 1 Score Distribution</h5>
+                </div>
+                <div class="card-body" style="height: 300px;">
+                    <canvas id="group1ScoreChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                     <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Group 2 Score Distribution</h5>
+                </div>
+                <div class="card-body" style="height: 300px;">
+                    <canvas id="group2ScoreChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <hr class="my-5">
+
     <h2 class="mb-3 text-center">T-Test Results (Group 1 vs Group 2)</h2>
     <p class="text-center text-muted mb-4">Hypothesis: Mean score of Group 1 is greater than Mean score of Group 2.</p>
     <div class="card shadow-sm mb-4">
@@ -117,43 +154,37 @@
             <h4 class="mb-0"><i class="bi bi-clipboard-data-fill me-2"></i>Hypothesis Test Details</h4>
         </div>
         <div class="card-body">
-            {% if group1_count >= 2 and group2_count >= 2 and t_statistic is not None and p_value is not None %}
+            {% if group1_count >= 2 and group2_count >= 2 and t_statistic is not None and p_value is not None and t_statistic == t_statistic and p_value == p_value %}
                 <div class="row">
                     <div class="col-md-3 mb-3">
-                        <div class="p-3 bg-light rounded border">
+                        <div class="p-3 bg-light rounded border h-100">
                             <strong>T-statistic:</strong>
                             <p class="fs-5 mb-0">{{ t_statistic|floatformat:3 }}</p>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="p-3 bg-light rounded border">
+                        <div class="p-3 bg-light rounded border h-100">
                             <strong>P-value:</strong>
                             <p class="fs-5 mb-0">{{ p_value|floatformat:3 }}</p>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="p-3 bg-light rounded border">
+                        <div class="p-3 bg-light rounded border h-100">
                             <strong>Degrees of Freedom:</strong>
                             <p class="fs-5 mb-0">{{ df|floatformat:2|default:"N/A" }}</p>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="p-3 bg-light rounded border">
+                        <div class="p-3 bg-light rounded border h-100">
                             <strong>Cohen's d:</strong>
                             <p class="fs-5 mb-0">{{ cohens_d|floatformat:2|default:"N/A" }}</p>
                             <small class="text-muted">
-                                {% if cohens_d %}
-                                    {% if cohens_d >= 1.2 %}
-                                        Very large effect
-                                    {% elif cohens_d >= 0.8 %}
-                                        Large effect
-                                    {% elif cohens_d >= 0.5 %}
-                                        Medium effect
-                                    {% elif cohens_d >= 0.2 %}
-                                        Small effect
-                                    {% else %}
-                                        Negligible effect
-                                    {% endif %}
+                                {% if cohens_d is not None and cohens_d == cohens_d %}
+                                    {% if cohens_d >= 1.2 %}Very large effect
+                                    {% elif cohens_d >= 0.8 %}Large effect
+                                    {% elif cohens_d >= 0.5 %}Medium effect
+                                    {% elif cohens_d >= 0.2 %}Small effect
+                                    {% else %}Negligible effect{% endif %}
                                 {% endif %}
                             </small>
                         </div>
@@ -161,21 +192,21 @@
                 </div>
                  <div class="row">
                     <div class="col-md-6 mb-3">
-                        <div class="p-3 bg-light rounded border">
+                        <div class="p-3 bg-light rounded border h-100">
                             <strong>Alpha Level:</strong>
                             <p class="fs-5 mb-0">{{ alpha }}</p>
                         </div>
                     </div>
-                    {% if confidence_interval and confidence_interval.0 is not None and confidence_interval.1 is not None %}
+                    {% if confidence_interval and confidence_interval.0 is not None and confidence_interval.1 is not None and confidence_interval.0 == confidence_interval.0 %}
                     <div class="col-md-6 mb-3">
-                        <div class="p-3 bg-light rounded border">
+                        <div class="p-3 bg-light rounded border h-100">
                             <strong>95% CI for Difference (Mean1 - Mean2):</strong>
                             <p class="fs-5 mb-0">({{ confidence_interval.0|floatformat:3 }}, {{ confidence_interval.1|floatformat:3 }})</p>
                         </div>
                     </div>
                     {% else %}
                     <div class="col-md-6 mb-3">
-                        <div class="p-3 bg-light rounded border">
+                        <div class="p-3 bg-light rounded border h-100">
                             <strong>95% CI for Difference:</strong>
                             <p class="fs-5 mb-0 text-muted">Not calculable</p>
                         </div>
@@ -215,4 +246,59 @@
     </div>
 
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const scoreLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+
+    function createBarChart(canvasId, label, data, backgroundColor) {
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) return;
+        const chartData = data && data.some(d => d > 0);
+        if (!chartData && ctx.parentNode) {
+             ctx.parentNode.innerHTML = '<p class="text-center text-muted py-5">No data available for this chart.</p>';
+             return;
+        }
+
+        new Chart(ctx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: scoreLabels,
+                datasets: [{
+                    label: label,
+                    data: data,
+                    backgroundColor: backgroundColor,
+                    borderColor: backgroundColor.replace('0.6', '1').replace('0.2', '1'),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Number of Participants' },
+                        ticks: { stepSize: 1, precision: 0 }
+                    },
+                    x: { title: { display: true, text: 'Score' } }
+                },
+                plugins: { legend: { display: true, position: 'top' } }
+            }
+        });
+    }
+
+    const overallData = {{ overall_score_distribution|safe }};
+    createBarChart('overallScoreChart', 'Overall Scores', overallData, 'rgba(54, 162, 235, 0.6)');
+
+    const group1Data = {{ group1_score_distribution|safe }};
+    createBarChart('group1ScoreChart', 'Group 1 Scores', group1Data, 'rgba(75, 192, 192, 0.6)');
+
+    const group2Data = {{ group2_score_distribution|safe }};
+    createBarChart('group2ScoreChart', 'Group 2 Scores', group2Data, 'rgba(255, 159, 64, 0.6)');
+});
+</script>
 {% endblock %}
